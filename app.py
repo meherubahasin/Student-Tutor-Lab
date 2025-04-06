@@ -67,17 +67,6 @@ def seed_products():
 def index():
     return render_template('index.html')
 
-@app.route('/toggle_register')
-def toggle_register():
-    if 'user_id' in session:
-        return redirect(url_for('dashboard'))
-    return True
-
-@app.route('/toggle_login')
-def toggle_login():
-    if 'user_id' in session:
-        return redirect(url_for('dashboard'))
-    return False
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -107,19 +96,20 @@ def login():
     if request.method == 'POST':
         gsuite = request.form['gsuite']
         password = request.form['password']
-        user = user_collections.find_one({"username": gsuite})
+        user = user_collections.find_one({"gsuite": gsuite})
         if user:
             session['user_id'] = str(user['_id'])
             session['user_type'] = user['type']
             session['gsuite'] = user['gsuite']
             print('Login successful!', 'success')
             if session['user_type'] == 'admin':
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('dashboard_admin.html'))
             else:
-                return render_template('homepage.html')
+                return render_template('index.html')
         else:
-            flash('Invalid username or password.', 'danger')
-    return render_template('login.html')
+            print('Invalid username or password.')
+            
+    return render_template('index.html', password=password, user_id = session['user_id'])
 
 
 # @app.route('/dashboard', methods=['POST', 'GET'])
