@@ -63,6 +63,8 @@ def seed_products():
     return "Seeded!"
 
 
+# MODULE 1
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -76,6 +78,7 @@ def register():
         password = request.form['password']
         studentID = request.form['studentID']
         name = request.form['full-name']
+        initials = request.form['initials']
         # hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         
         user_collections.insert_one({
@@ -83,9 +86,12 @@ def register():
             "password": password,
             "type": usertype,
             "name": name,
-            "studentID": studentID
+            "studentID": studentID,
+            "initials": initials,
+            "status": None,
+            "ban": False
         })
-        flash('Registration successful! Please log in.', 'success')
+        print('Registration successful! Please log in.', 'success')
         return redirect(url_for('login'))
     
     return render_template('register.html')
@@ -103,49 +109,108 @@ def login():
             session['gsuite'] = user['gsuite']
             print('Login successful!', 'success')
             if session['user_type'] == 'admin':
-                return redirect(url_for('dashboard_admin.html'))
+                return redirect(url_for('dashboard.html'))
             else:
                 return render_template('index.html')
         else:
             print('Invalid username or password.')
             
-    return render_template('index.html', password=password, user_id = session['user_id'])
+        return render_template('index.html', password=password, user_id = session['user_id'], user_type = session['user_type'])
+    else:
+        return render_template('register.html')
 
 
-# @app.route('/dashboard', methods=['POST', 'GET'])
-# def dashboard():
-#     products = list(product_collections.find())
-#     users = list(user_collections.find())
+@app.route('/dashboard', methods=['POST', 'GET'])
+def dashboard():
+    user = user_collections.find_one({"gsuite": session['gsuite']})
+    courses = list(courses_collections.find())
+    users = list(user_collections.find())
+    appointments = list(appointment_collections.find())
+    print(session['user_type'])
+    
+    if 'user_id' not in session:
+        print('Please log in to access the profile.', 'warning')
+        return redirect(url_for('login'))
+    if session['user_type'] == 'admin':
+        return render_template('admin_dashboard.html', user=session['_id'], courses=courses, users=users)
+    elif session['user_type'] == 'ST':
+        return render_template('st_profile.html', username=user, courses = courses, appointments = appointments)
+    else:
+        return render_template('student_profile.html', username=user, courses = courses, appointments = appointments)
+    
+@app.route('/update_name', methods=['POST', 'GET'])
+def update_name():
+    user = user_collections.find_one({"gsuite": session['gsuite']})
+    if request.method == 'POST':
+        user_collections.update_one(
+                {"gsuite": session['gsuite']},
+                {"$set": {"name": request.form.get('new_name')}}
+            )
+        print("Name Changed!")
+    return render_template('edit_info.html',username = user, edit_type='name')
 
-#     if 'user_id' not in session:
-#         print('Please log in to access the dashboard.', 'warning')
-#         return redirect(url_for('login'))
-#     if g.user_type == 'admin':
-#         return render_template('admin_dashboard_shop.html', username=session['username'], products=products, users=users)
-#     else:
-#         return render_template('dashboard.html', username=session['username'], products=products)
+@app.route('/update_id', methods=['POST', 'GET'])
+def update_id():
+    user = user_collections.find_one({"gsuite": session['gsuite']})
+    if request.method == "POST":
+        user_collections.update_one(
+                {"gsuite": session['gsuite']},
+                {"$set": {"studentID": request.form.get('newID')}}
+            )
+        print("ID Changed!",request.form.get('newID'))
+    return render_template('edit_info.html',username = user, edit_type='id')
 
+@app.route('/update_password', methods=['POST', 'GET'])
+def update_password():
+    user = user_collections.find_one({"gsuite": session['gsuite']})
+    if request.method == 'POST':
+        
+        if 'user_id' not in session:
+            return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+        else:
+            
+            current_password = request.form.get('pass_current')
+            if current_password == user['password']:
+                new_password = request.form.get('pass')
+                retype_password = request.form.get('pass2')
+                if new_password == retype_password:
+                    user_collections.update_one(
+                        {"gsuite": session['gsuite']},
+                        {"$set": {"password": new_password}}
+                    )
+                    print("Password Changed!")
+                else:
+                    print('New passwords do not match')
+                    
+                    
+    return render_template('edit_info.html',username = user, edit_type='password')
+    
+    
+
+#MODULE 3    
 @app.route('/st_appointment',  methods=['GET', 'POST']) 
 def appointment():
     users = list(user_collections.find())
-    user_id = request.form.get('user_id')
-    st = request.form.get('initials')
-    st = st_collections.find_one({'initials': st})
-    date = request.form.get('date')
-    slot = request.form.get('slot')
-    appointment = {'st': st['initials'], 'student': user_id, 'date': date, 'slot': slot}
-    appointment_collections.insert_one(appointment)
-    return jsonify({"appointment": str(appointment)})
-    # return render_template('book_appointment.html')
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+        st = request.form.get('initials')
+        st = st_collections.find_one({'initials': st})
+        date = request.form.get('date')
+        slot = request.form.get('slot')
+        appointment = {'st': st['initials'], 'student': user_id, 'date': date, 'slot': slot}
+        appointment_collections.insert_one(appointment)
+        # return jsonify({"appointment": str(appointment)})
+        return render_template('book_appointment.html')
     
 @app.route('/display_date',  methods=['GET', 'POST']) 
 def display_consultation():
-    st = request.form.get('initials')
-    st = st_collections.find_one({'initials': st})
-    # format: day: slot 1 --> (start, end), slot 2 --> (start, end)
-    consultation_hours = st['consultation']
-    return jsonify({"consultation": str(consultation_hours), "st": str(st['initials'])})
-    # return render_template('book_appointment.html')
+    if request.method == 'POST':
+        st = request.form.get('initials')
+        st = st_collections.find_one({'initials': st})
+        # format: day: slot 1 --> (start, end), slot 2 --> (start, end)
+        consultation_hours = st['consultation']
+        # return jsonify({"consultation": str(consultation_hours), "st": str(st['initials'])})
+        return render_template('book_appointment.html')
 
 @app.route('/search_courses',  methods=['GET', 'POST']) 
 def search_courses():
@@ -216,14 +281,14 @@ def viewcontent():
         course = courses_collections.find_one({"code": course_code})
         content = course[resource][index]
 
-    # return render_template('course_content.html',  course=course, content = content)
-    return jsonify({"clicked at": content, "from": course_code})
+    return render_template('course_content.html',  course=course, content = content)
+    # return jsonify({"clicked at": content, "from": course_code})
 
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('You have been logged out.', 'success')
-    return redirect(url_for('login'))
+    print('You have been logged out.', 'success')
+    return redirect(url_for('index'))
 
 
 app.config['SESSION_COOKIE_SECURE'] = True
