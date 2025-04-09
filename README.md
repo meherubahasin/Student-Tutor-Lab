@@ -15,12 +15,10 @@ MongoDB (local or cloud)
 Flask (pip install flask pymongo)
 
 ## 🛠️Project Structure
-Copy
-.
-├── app.py                # Flask backend
-├── templates/            # HTML templates
-│   ├── select_slots.html # Slot selection UI
+├── app.py          
+├── templates/    
+│   ├── select_slots.html 
 │   └── ...  
-├── static/               # CSS/JS (if any)
-├── .env                  # Environment config
+├── static/      
+├── .env
 └── README.md
