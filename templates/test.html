@@ -1,0 +1,52 @@
+<div id="register-form" class="form-container">
+  <p class="title">Register</p>
+  <form class="form">
+      <div class="input-group">
+          <label for="username">Email</label>
+          <input type="email" name="gsuite" id="gsuite" placeholder="">
+      </div>
+      <div class="input-group">
+          <label for="username">Full Name</label>
+          <input type="text" name="fullname" id="fullname" placeholder="">
+      </div>
+      <div class="input-group">
+          <label for="username">Student ID</label>
+          <input type="text" name="studentID" id="studentID" placeholder="">
+      </div>
+      <div class="input-group">
+          <label for="user-type">I am a:</label>
+          <select name="user-type" id="user-type" required>
+              <option value="">Select user type</option>
+              <option value="student">Student</option>
+              <option value="student-tutor">Student Tutor</option>
+          </select>
+      </div>
+      <div id="st-fields" style="display: none;">
+          <div class="input-group">
+              <label for="course-code">Course Code</label>
+              <input type="text" name="course-code" id="course-code" placeholder="e.g. CSE110">
+          </div>
+          <div class="input-group">
+              <label for="course-int">ST Initials</label>
+              <input type="text" name="initials" id="course-int" placeholder="e.g. STMHA">
+          </div>
+          <div class="input-group">
+              <label for="appointment-letter">Appointment Letter ID</label>
+              <textarea name="appointment-letter" id="appointment-letter" rows="3" placeholder=""></textarea>
+          </div>
+      </div>
+      <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" placeholder="">
+      </div>
+      <div class="input-group">
+          <label for="password">Retype Password</label>
+          <input type="password" name="password" id="password" placeholder="">
+      </div>
+      <button class="sign">Register</button>
+  </form>
+  
+  <p class="signup">Already have an account?
+      <a href="{{ url_for('toggle_login') }}">Login</a>
+  </p>
+</div>

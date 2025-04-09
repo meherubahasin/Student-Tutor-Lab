@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Student Tutor Lab</title>
+        <meta name="description" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='appointment.css') }}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+        {%block content%}
+        {% include 'navbar.html' %}
+        {%endblock%}
+
+        <main class="booking-content">
+            <section class="profile-section">
+              <div class="profile-info">
+                <div class="profile-avatar">STMHA</div>
+                <h2 class="profile-name">Meheruba Hasin Alif</h2>
+                <button class="profile-action-btn primary">
+                  Booking an Appointment
+                </button>
+                <button class="profile-action-btn secondary">Consultation Hour</button>
+              </div>
+            </section>
+        
+            <section class="calendar-section" aria-live="polite">
+              <div class="validation-message" id="dateValidationMessage"></div>
+              <div class="calendar-container">
+                <div class="calendar-header">
+                  <button class="calendar-nav-btn" aria-label="Previous month">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/b5e3dcbe9508e6b441cc54cb75673c3a7c92657d?placeholderIfAbsent=true&apiKey=e86e8fcde1bf45599381581dad9ada5a"
+                      alt=""
+                      class="calendar-nav-icon"
+                    />
+                  </button>
+                  <h3 class="calendar-month">March 2025</h3>
+                  <button class="calendar-nav-btn" aria-label="Next month">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2588351c875cb071f2aeed04b2055da2e0985c93?placeholderIfAbsent=true&apiKey=e86e8fcde1bf45599381581dad9ada5a"
+                      alt=""
+                      class="calendar-nav-icon"
+                    />
+                  </button>
+                </div>
+        
+                <div class="calendar-grid">
+                  <div class="calendar-weekdays">
+                    <span class="weekday">So.</span>
+                    <span class="weekday">Mo.</span>
+                    <span class="weekday">Di.</span>
+                    <span class="weekday">Mi.</span>
+                    <span class="weekday">Do.</span>
+                    <span class="weekday">Fr.</span>
+                    <span class="weekday">Sa.</span>
+                  </div>
+        
+                  <div class="calendar-days">
+                    <button class="calendar-day">1</button>
+                    <button class="calendar-day">2</button>
+                    <button class="calendar-day">3</button>
+                    <button class="calendar-day">4</button>
+                    <button class="calendar-day">5</button>
+                    <button class="calendar-day">6</button>
+                    <button class="calendar-day">7</button>
+                    <button class="calendar-day">8</button>
+                    <button class="calendar-day">9</button>
+                    <button class="calendar-day">10</button>
+                    <button class="calendar-day">11</button>
+                    <button class="calendar-day">12</button>
+                    <button class="calendar-day">13</button>
+                    <button class="calendar-day highlight">14</button>
+                    <button class="calendar-day highlight">15</button>
+                    <button class="calendar-day highlight">16</button>
+                    <button class="calendar-day">17</button>
+                    <button class="calendar-day highlight">18</button>
+                    <button class="calendar-day">19</button>
+                    <button class="calendar-day highlight">20</button>
+                    <button class="calendar-day highlight">21</button>
+                    <button class="calendar-day">22</button>
+                    <button class="calendar-day">23</button>
+                    <button class="calendar-day">24</button>
+                    <button class="calendar-day highlight">25</button>
+                    <button class="calendar-day highlight">26</button>
+                    <button class="calendar-day highlight">27</button>
+                    <button class="calendar-day highlight">28</button>
+                    <button class="calendar-day highlight">29</button>
+                    <button class="calendar-day highlight">30</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+        
+            <section class="timeslots-section">
+              <div class="validation-message" id="timeValidationMessage"></div>
+              <div class="timeslots-container">
+                <div class="timeslot-group">
+                  <button class="timeslot-btn">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/5a5dc55afe3bdd87feb9e5e232c7cf6699702edc?placeholderIfAbsent=true&apiKey=e86e8fcde1bf45599381581dad9ada5a"
+                      alt=""
+                      class="timeslot-icon"
+                    />
+                    <span class="timeslot-time">05:30 PM</span>
+                  </button>
+                  <button class="timeslot-btn">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/5a5dc55afe3bdd87feb9e5e232c7cf6699702edc?placeholderIfAbsent=true&apiKey=e86e8fcde1bf45599381581dad9ada5a"
+                      alt=""
+                      class="timeslot-icon"
+                    />
+                    <span class="timeslot-time">05:30 PM</span>
+                  </button>
+                  <button class="timeslot-btn active">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/c947696aaf13a507d3b8e86e4d5e07cf69ae5640?placeholderIfAbsent=true&apiKey=e86e8fcde1bf45599381581dad9ada5a"
+                      alt=""
+                      class="timeslot-icon"
+                    />
+                    <span class="timeslot-time">05:30 PM</span>
+                  </button>
+                </div>
+                <button class="booking-btn" id="bookingButton">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/d32226d210b5de848ceba410797e4c4226437dfb?placeholderIfAbsent=true&apiKey=e86e8fcde1bf45599381581dad9ada5a"
+                    alt=""
+                    class="booking-icon"
+                  />
+                  <span>Book an Appointment</span>
+                </button>
+              </div>
+            </section>
+          </main>
+        
+          <div
+            class="modal"
+            id="confirmationModal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modalTitle"
+          >
+            <div class="modal-content">
+              <h2 id="modalTitle">Confirm Booking</h2>
+              <p id="bookingDetails"></p>
+              <div class="modal-actions">
+                <button class="modal-btn confirm" id="confirmBooking">Confirm</button>
+                <button class="modal-btn cancel" id="cancelBooking">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+
+    </body>
+</html>

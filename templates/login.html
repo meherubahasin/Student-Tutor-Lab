@@ -1,0 +1,21 @@
+<div id="login-form" class="form-container">
+    <p class="title">Login</p>
+    <form class="form" action="/login" method="POST">
+        <div class="input-group">
+            <label for="gsuite">Email</label>
+            <input type="text" name="gsuite" id="gsuite" placeholder="Gsuite Email">
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="">
+            <div class="forgot">
+                <a rel="noopener noreferrer" href="#">Forgot Password ?</a>
+            </div>
+        </div>
+        <button class="sign">Sign in</button>
+    </form>
+    
+    <p class="signup">Don't have an account?
+        <a href="/register">Register</a>
+    </p>
+</div>

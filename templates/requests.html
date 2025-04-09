@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Approval - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root{
+        --primary: #0e141c;
+            --accent: #4b88d8;
+            --accent2: #607ea2;
+            --light: #bdb3a3;
+            --dark: #333;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Helvetica', 'Verdana', sans-serif;
+        }
+
+        body {
+            background-color: white;
+            color: var(--primary);
+        }
+        /* NAVBAR Start*/
+.navbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s ease-out;
+    background-color: var(--primary);
+    color: white;
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1000;
+}
+
+.logo {
+    padding: 0 2.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: skyblue;
+    text-decoration: none;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0 1.5rem;
+    align-items: center;
+}
+
+.nav-list li {
+    display: inline-block;
+}
+
+.nav-list li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.nav-list li a:hover {
+    background-color: var(--accent);
+    color: black;
+    border-radius: 30px;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+}
+
+.hamburger span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: var(--accent2);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+        .request-card {
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        .request-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .badge-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    {%block content%}
+        {% include 'navbar.html' %}
+    {%endblock%}
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-header">
+                <a href="/dashboard">
+                </a>
+                <h3 class="profile-name">ADMIN</h3>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="/requests" class="nav-item">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="/reports" class="nav-item">
+                    <i class="fas fa-report-card"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="/display_student" class="nav-item">
+                    <i class="fas fa-id-card"></i>
+                    <span>Students</span>
+                </a>
+                <a href="/display_sts" class="nav-item">
+                    <i class="fas fa-id-card"></i>
+                    <span>Student Tutors</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Personal Information Section -->
+            <div class="info-card">
+                <div class="info-header">
+                    <div class="info-value">ADMIN PANEL</div>
+                </div>
+                <!-- <div class="info-grid">
+                    <div class="info-item">
+                        
+                    </div>
+                </div> -->
+            </div>
+            <div class="container py-5">
+                <h1 class="mb-4">Requests</h1>
+        
+                
+        
+                <div class="row mb-4">
+                
+                    <div class="col-md-6">
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Requests</option>
+                            <option value="pending">Pending Only</option>
+                            <option value="approved">Approved</option>
+                            <option value="denied">Denied</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Requests List -->
+                <div class="row" id="requestsContainer">
+                    {% for request in requests %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card request-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ request.name }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ request.gsuite }}</h6>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge rounded-pill 
+                                        {% if request.status == 'Pending' %}badge-pending
+                                        {% elif request.status == 'Approved' %}bg-success
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ request.status }}
+                                    </span>
+                                    <small class="text-muted">{{ request.studentID }}</small>
+                                </div>
+                                
+                                <p class="card-text">
+                                    <strong>Type:</strong> {{ request.type }}<br>
+                                    <strong>Major:</strong> {{ request.major }}<br>
+                                    <strong>Initials:</strong> {{ request.initials }}
+                                </p>
+                                
+                                {% if request.status == 'Pending' %}
+                                <div class="action-buttons">
+                                    <form method="POST" action="{{ url_for('authenticate') }}">
+                                        <input type="hidden" name="action" value="approve">
+                                        <input type="hidden" name="gsuite" value="{{ request.gsuite }}">
+                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('authenticate') }}">
+                                        <input type="hidden" name="action" value="deny">
+                                        <input type="hidden" name="gsuite" value="{{ request.gsuite }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Deny</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">No pending account requests found.</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple client-side filtering
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            filterRequests();
+        });
+        
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            filterRequests();
+        });
+        
+        function filterRequests() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            document.querySelectorAll('.request-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const status = card.querySelector('.badge').textContent.trim();
+                
+                const matchesSearch = text.includes(searchValue);
+                const matchesStatus = statusFilter === 'all' || status.toLowerCase().includes(statusFilter.toLowerCase());
+                
+                if (matchesSearch && matchesStatus) {
+                    card.parentElement.style.display = 'block';
+                } else {
+                    card.parentElement.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<div class="navbar">
+    <a class="logo" href="{{ url_for('index') }}">Student Tutor Lab</a>
+    <ul class="nav-list">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="{{ url_for('display_courses') }}">Courses</a></li>
+        <li><a href="#">About Us</a></li>
+
+        {% if 'gsuite' in session%}
+            {% if 'user_type' == "admin" %}
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            {% else %}
+            <li><a href="{{ url_for('dashboard') }}">Profile</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}">Sign Up</a></li>
+        {% endif %}  
+    </ul>
+
+
+    
+</div>
+
+
+
