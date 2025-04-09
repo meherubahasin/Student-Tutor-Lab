@@ -1,0 +1,430 @@
+.booking-container {
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .booking-header {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    gap: 20px;
+    font-family:
+      Lexend,
+      -apple-system,
+      Roboto,
+      Helvetica,
+      sans-serif;
+    color: rgb(13, 20, 28);
+    white-space: nowrap;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .booking-title {
+    font-size: 40px;
+    font-weight: 700;
+    text-align: center;
+    align-self: start;
+    margin: 0;
+  }
+  
+  .search-bar {
+    border-radius: 10px;
+    background-color: rgba(120, 191, 235, 0.36);
+    display: flex;
+    padding: 18px 16px;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1;
+    justify-content: start;
+  }
+  
+  .search-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    object-position: center;
+    width: 16px;
+    align-self: stretch;
+    margin: auto 0;
+  }
+  
+  .booking-content {
+    align-self: center;
+    margin-top: 39px;
+    width: 100%;
+    max-width: 996px;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .profile-section {
+    width: 31%;
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-family:
+      Lexend,
+      -apple-system,
+      Roboto,
+      Helvetica,
+      sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .profile-avatar {
+    background-color: rgb(0, 0, 0);
+    border-radius: 50%;
+    align-self: center;
+    width: 204px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+  }
+  
+  .profile-name {
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    margin: 8px 0 0;
+  }
+  
+  .profile-action-btn {
+    border: none;
+    border-radius: 40px;
+    padding: 20px;
+    font-family:
+      Inter,
+      -apple-system,
+      Roboto,
+      Helvetica,
+      sans-serif;
+    font-weight: 700;
+    margin-top: 9px;
+    cursor: pointer;
+  }
+  
+  .profile-action-btn.primary {
+    background-color: rgb(49, 75, 110);
+    color: rgb(255, 253, 253);
+    margin-top: 19px;
+  }
+  
+  .profile-action-btn.secondary {
+    background-color: rgb(120, 191, 235);
+    color: rgb(13, 20, 28);
+  }
+  
+  .calendar-section {
+    width: 42%;
+    position: relative;
+  }
+  
+  .validation-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 8px;
+    min-height: 20px;
+    text-align: center;
+  }
+  
+  .calendar-container {
+    display: flex;
+    height: 340px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    font-family:
+      "Lexend Deca",
+      -apple-system,
+      Roboto,
+      Helvetica,
+      sans-serif;
+  }
+  
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 20px;
+    color: rgb(13, 20, 28);
+    font-weight: 300;
+    letter-spacing: 0.38px;
+    line-height: 1.2;
+  }
+  
+  .calendar-nav-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .calendar-nav-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    object-position: center;
+    width: 36px;
+  }
+  
+  .calendar-grid {
+    margin-top: 8px;
+    width: 100%;
+    max-width: 384px;
+    font-weight: 400;
+    text-align: center;
+  }
+  
+  .calendar-weekdays {
+    display: flex;
+    align-items: start;
+    gap: 8px;
+    font-size: 14px;
+    color: rgb(13, 20, 28);
+    line-height: 1;
+  }
+  
+  .weekday {
+    padding: 19px 15px;
+    width: 48px;
+  }
+  
+  .calendar-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .calendar-day {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 17px;
+    color: rgb(120, 191, 235);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .calendar-day.invalid {
+    opacity: 0.5;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  
+  .calendar-day.selected {
+    background-color: rgb(120, 191, 235);
+    color: white;
+  }
+  
+  .calendar-day.highlight {
+    background-color: rgba(13, 20, 28, 0.16);
+    border-radius: 50%;
+    color: rgb(13, 20, 28);
+  }
+  
+  .timeslots-section {
+    width: 27%;
+    margin-top: 73px;
+  }
+  
+  .timeslots-container {
+    font-family:
+      "Lexend Deca",
+      -apple-system,
+      Roboto,
+      Helvetica,
+      sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1;
+  }
+  
+  .timeslot-group {
+    border-radius: 5px;
+    border: 1px dashed rgb(151, 71, 255);
+    padding: 20px;
+    color: #044343;
+  }
+  
+  .timeslot-btn {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(13, 20, 28);
+    display: flex;
+    padding: 14px 45px;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .timeslot-btn.invalid {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .timeslot-btn.invalid::after {
+    content: "Unavailable";
+    position: absolute;
+    font-size: 12px;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #dc3545;
+  }
+  
+  .timeslot-btn.active {
+    background-color: rgb(13, 20, 28);
+    border-color: rgba(4, 67, 67, 0.32);
+    color: rgb(255, 255, 255);
+  }
+  
+  .timeslot-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    object-position: center;
+    width: 18px;
+  }
+  
+  .booking-btn {
+    border-radius: 10px;
+    background-color: rgb(120, 191, 235);
+    border: 1px solid rgb(13, 20, 28);
+    display: flex;
+    margin-top: 15px;
+    padding: 14px 16px;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    justify-content: center;
+    color: rgb(13, 20, 28);
+    cursor: pointer;
+  }
+  
+  .booking-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    object-position: center;
+    width: 18px;
+  }
+  
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal.active {
+    display: flex;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+  }
+  
+  .modal-content h2 {
+    margin: 0 0 16px;
+    color: rgb(13, 20, 28);
+  }
+  
+  .modal-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid rgb(13, 20, 28);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .modal-btn.confirm {
+    background-color: rgb(120, 191, 235);
+    color: rgb(13, 20, 28);
+  }
+  
+  .modal-btn.cancel {
+    background-color: white;
+    color: rgb(13, 20, 28);
+  }
+  
+  @media (max-width: 991px) {
+    .booking-header {
+      max-width: 100%;
+      white-space: initial;
+    }
+  
+    .search-bar {
+      white-space: initial;
+    }
+  
+    .booking-content {
+      max-width: 100%;
+      flex-direction: column;
+    }
+  
+    .profile-section,
+    .calendar-section,
+    .timeslots-section {
+      width: 100%;
+    }
+  
+    .profile-info {
+      margin-top: 40px;
+    }
+  
+    .profile-avatar {
+      padding: 20px;
+    }
+  
+    .profile-action-btn {
+      padding: 20px;
+    }
+  
+    .calendar-section {
+      margin-top: 40px;
+    }
+  
+    .timeslots-section {
+      margin-top: 40px;
+    }
+  
+    .modal-content {
+      margin: 20px;
+    }
+  }
+  
