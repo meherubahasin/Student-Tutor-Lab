@@ -87,7 +87,7 @@ def register():
         
             requests_collections.insert_one({
                 "gsuite": gsuite,
-                "password": bcrypt.generate_password_hash(password).decode('utf-8'),
+                "password": request.form['password'],
                 "type": usertype,
                 "name": name,
                 "studentID": studentID,
@@ -284,7 +284,7 @@ def update_password():
     user = user_collections.find_one({"gsuite": session['gsuite']})
     if request.method == 'POST':
         
-        if 'user_id' not in session:
+        if 'gsuite' not in session:
             return jsonify({'success': False, 'message': 'Unauthorized'}), 401
         else:
             
@@ -297,7 +297,7 @@ def update_password():
                         {"gsuite": session['gsuite']},
                         {"$set": {"password": new_password}}
                     )
-                    print("Password Changed!")
+                    return jsonify({'success': True, 'message': 'Changed'}), 200
                 else:
                     print('New passwords do not match')
                     
