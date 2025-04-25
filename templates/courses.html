@@ -145,10 +145,10 @@
                         </p>
                         </div>
                         <div class="card-actions">
-                            <form action="{{url_for('coursecontent')}}" method="POST">
-                                <input type="hidden" name="course_code" value={{ course.code }}>
+                            <form action="{{url_for('coursecontent', course_code=course.code)}}" method="POST">
+                                <input type="hidden" name="course_code" value="{{ course.code }}">
                                 {% if 'gsuite' in session%}
-                                <input type="hidden" name="user_id" value={{ session['gsuite'] }}>
+                                <input type="hidden" name="user_id" value="{{ session['gsuite']}}">
                                 {% endif %}
                                 <button type="submit" class="card-button">
                                     See Content
