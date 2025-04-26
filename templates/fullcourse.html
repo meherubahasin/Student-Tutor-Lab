@@ -127,9 +127,8 @@
 
                     </div>
                     <div class="stat-item">
-                        <a href="{{url_for('course_sts',course_code=course.code)}}">
-                        <span class="stat-number">{{ course.STs|length }}</span><span class="stat-label">STs</span>
-                        </a>
+                        <span class="stat-number">{{ course.STs|length }}</span>
+                        <span class="stat-label">STs</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">{{ course.popquiz|length }}</span>
@@ -137,7 +136,7 @@
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">{{ course.qas|length }}</span>
-                        <span class="stat-label">Solved Papers</span>
+                        <span class="stat-label">Resources</span>
                     </div>
                 </div>
             </div>
@@ -157,8 +156,9 @@
             aria-label="dropdown scrollbar"
             for="state-dropdown-1"
             class="trigger">Lectures</label>
-        
+          
           <form class="list webkit-scrollbar" role="list" dir="auto" action="/viewcontent" method="POST">
+
             {%for item in course.lectures%}
               <div class="listitem" role="listitem">
                 <input type="hidden" name="resource" value="lectures">
@@ -168,10 +168,29 @@
                   {{item}}
                 </button>
               </div>
+              {% if approved and type == "admin" %}
+                      <form action="/delete_resources" style="padding-bottom: 23px; padding-left: 17px; margin-bottom: -5px; margin-top: -10px;" method="POST">
+                          <input type="hidden" name="file_name" value="{{item}}">
+                          <input type="hidden" name="course_code" value="{{course.code}}">
+                          <input type="hidden" name="resource" value="lectures">
+                          <button class="btn btn-danger">Delete</button>
+                      </form>
+              {%endif%}
             {%endfor%}
           </form>
+          
+          {% if approved and type == "admin" %}
+              <form action="{{url_for('add_resources',course_code=course.code)}}" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                  <input type="hidden" name="resource" value="lectures">
+                  <input type="file" name="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                  <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload</button>
+                </div>
+
+              </form>
+          {%endif%}
         </div>
-            <!-- Solved Paper -->
+            <!-- Resources -->
             <div class="dropdown">
                 <input
                   hidden=""
@@ -183,63 +202,137 @@
                 <label
                   aria-label="dropdown scrollbar"
                   for="state-dropdown-2"
-                  class="trigger">Solved Paper</label>
+                  class="trigger">Resources</label>
               
-                <form class="list webkit-scrollbar" role="list" dir="auto" action="/viewcontent" method="POST">
+                
                     
                   {%for item in course.qas%}
-                    <div class="listitem" role="listitem">
-                      <input type="hidden" name="course-code" value="{{course.code}}">
-                      <input type="hidden" name="resource" value="qas">
-                      <input type="hidden" name="index" value="{{course.qas.index(item)}}">
-                      <button type="submit" class="article">
-                        {{item}}
-                      </button>
-                    </div>
-                    {% if 'type' == "ST" or 'type' == "admin" %}
-                    <form action="/add-resources">
-                        <button class="Btn" >Add Resources
-                            <svg class="svg" viewBox="0 0 512 512">
-                              <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
+                    <form class="list webkit-scrollbar" role="list" dir="auto" action="/view_resource" method="POST">
+                      <div class="listitem" role="listitem">
+                        <input type="hidden" name="course_code" value="{{course.code}}">
+                        <input type="hidden" name="file_name" value="{{item}}">
+                        <button type="submit" class="article">
+                          {{item}}
                         </button>
+                      </div>
                     </form>
+
+                    {% if approved or type == "admin" %}
+                      <form action="/delete_resources" style="padding-bottom: 23px; padding-left: 17px; margin-bottom: -5px; margin-top: -10px;" method="POST">
+                          <input type="hidden" name="file_name" value="{{item}}">
+                          <input type="hidden" name="course_code" value="{{course.code}}">
+                          <input type="hidden" name="resource" value="qas">
+                          <button class="btn btn-danger">Delete</button>
+                      </form>
                     {%endif%}
+
                   {%endfor%}
-                </form>
+                  
+                
+
+              {% if approved or type == "admin" %}
+              <form action="{{url_for('add_resources',course_code=course.code)}}" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                  <input type="hidden" name="resource" value="qas">
+                  <input type="file" name="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                  <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload</button>
+                </div>
+
+              </form>
+              {%endif%}
               </div>
 
 
 
-        <!-- Pop quizzes -->
-        <div class="dropdown">
-            <input
-              hidden=""
-              class="sr-only"
-              name="state-dropdown-3"
-              id="state-dropdown-3"
-              type="checkbox"
-            />
-            <label
-              aria-label="dropdown scrollbar"
-              for="state-dropdown-3"
-              class="trigger">Pop-quizzes</label>
-          
-            <form class="list webkit-scrollbar" role="list" dir="auto" action="/viewcontent" method="POST">
-              {%for item in course.popquiz%}
-                <div class="listitem" role="listitem">
-                  <input type="hidden" name="resource" value="popquiz">
-                  <input type="hidden" name="course-code" value="{{course.code}}">
-                  <input type="hidden" name="index" value="{{course.popquiz.index(item)}}">
-                  <button type="submit" name=""  class="article">
-                    {{item}}
-                  </button>
-                </div>
-              {%endfor%}
-            </form>
-          </div>
-
-        
-    </div>
+        <!-- Pop-quiz-->
+              <div class="dropdown">
+                <input
+                  hidden=""
+                  class="sr-only"
+                  name="state-dropdown-3"
+                  id="state-dropdown-3"
+                  type="checkbox"
+                />
+                <label
+                  aria-label="dropdown scrollbar"
+                  for="state-dropdown-3"
+                  class="trigger">Pop-quizzes</label>
+              
+                
+                  {%for item in course.popquiz%}
+                  
+                    <form class="list webkit-scrollbar" role="list" dir="auto" action="#" method="POST">
+                      <div class="listitem" role="listitem">
+                        <p  class="article">{{item['q']}} <br>[marks:1]</p>
+                      </div>
+                    </form>
+                  
+                  {% if approved or type == "admin" %}
+                  <form action="{{url_for('delete_quiz',course_code=course.code)}}" style="padding-bottom: 23px; padding-left: 17px; margin-bottom: -5px; margin-top: -10px;" method="POST">
+                      <input type="hidden" name="question" value="{{item['q']}}">
+                      <input type="hidden" name="st_answer" value="{{item['a']}}">
+                      <button class="btn btn-danger">Delete</button>
+                  </form>
+                  {%endif%}
+                  
+                  {% if type == "student" %}
+                  {%if item['q'] in answered_questions%}
+    
+                    {%if answers%}
+                      {%for dicts in answers%}
+                        {%if dicts['q']==item['q']%}
+                        <div style="padding-bottom: 7px;margin-top: -20px;margin-left: 17px; margin-right: 10px;">
+                          {%if dicts['a']==item['a']%}
+                            <p style="padding-left: 20px; background-color: rgb(149, 255, 142);">marks achieved: 1/1</p>
+                          {%else%}
+                            <p style="padding-left: 20px; background-color: rgb(255, 143, 143);">marks achieved: 0/1 <br>correct answer: {{not(dicts['a'])}}</p>
+                          {%endif%}
+                        </div> 
+                        {%endif%}
+                        
+                      {%endfor%}
+                    {%endif%}
+    
+                  {%else%}
+                    
+                    
+                    
+                    <form action="{{url_for('submit_quiz',course_code=course.code)}}" style="padding-bottom: 23px; padding-left: 17px; margin-bottom: -5px; margin-top: -10px;" method="POST">
+                      <input type="hidden" name="question" value="{{item['q']}}">
+    
+                      <div class="form-check form-check-inline" style="padding-top: 7px;">
+                        <input class="form-check-input" type="radio" name="answer" id="inlineRadio1" value="True">
+                        <label class="form-check-label" for="inlineRadio1">True</label>
+                      </div>
+                      <div class="form-check form-check-inline" style="padding-top: 7px;">
+                        <input class="form-check-input" type="radio" name="answer" id="inlineRadio2" value="False">
+                        <label class="form-check-label" for="inlineRadio2">False</label>
+                      </div>
+                        <button class="btn btn-danger">Submit</button>
+                    </form>
+                {%endif%}
+                {%endif%}
+                {%endfor%}
+                
+    
+    
+                {% if approved or type == "admin" %}
+                  <form action="{{url_for('create_quiz',course_code=course.code)}}" method="POST" enctype="multipart/form-data" style="padding-left: 20px;">
+                    <div class="input-group">
+                      <input type="text" name="question" aria-label="Upload" style="margin-right: 20px;">
+                      <div class="form-check form-check-inline" style="padding-top: 7px;">
+                        <input class="form-check-input" type="radio" name="st_answer" id="inlineRadio1" value="True">
+                        <label class="form-check-label" for="inlineRadio1">True</label>
+                      </div>
+                      <div class="form-check form-check-inline" style="padding-top: 7px;">
+                        <input class="form-check-input" type="radio" name="st_answer" id="inlineRadio2" value="False">
+                        <label class="form-check-label" for="inlineRadio2">False</label>
+                      </div>
+                      <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload</button>
+                    </div>
+                  </form>
+                {%endif%}
+              </div>
 
     
 </body>
