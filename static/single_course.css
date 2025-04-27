@@ -1,6 +1,4 @@
-
-  /* Main content styles */
-  .main-content {
+.main-content {
     max-width: 1176px;
     margin: 0 auto;
     padding: 40px 22px;
@@ -13,37 +11,13 @@
     margin-bottom: 40px;
   }
   
-  /* Search section */
-  .search-container {
+.search-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 40px;
   }
   
-  .search-wrapper {
-    position: relative;
-    width: 353px;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 18px 16px;
-    border-radius: 10px;
-    background-color: rgba(120, 191, 235, 0.36);
-    font-size: 16px;
-    border: none;
-    font-family: "Lexend", sans-serif;
-  }
-  
-  .search-icon {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  /* Course header */
   .course-header {
     width: 100%;
     background-color: #314b6e;

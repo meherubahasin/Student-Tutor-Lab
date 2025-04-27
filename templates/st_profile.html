@@ -198,14 +198,14 @@
                             <div class="card-content">
                                 <h5 class="card-title">{{course.title}}</h5>
                                 <p class="card-description">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc felis ligula.
+                                
                             </p>
                             </div>
                             <div class="card-actions">
-                                <form action="{{url_for('coursecontent')}}" method="POST">
-                                    <input type="hidden" name="course_code" value={{ course.code }}>
+                                <form action="{{url_for('coursecontent',course_code=course.code)}}" method="POST">
+                                    <input type="hidden" name="course_code" value="{{ course.code }}">
                                     {% if 'user'%}
-                                    <input type="hidden" name="user_id" value={{ session['gsuite'] }}>
+                                    <input type="hidden" name="user_id" value="{{ session['gsuite'] }}">
                                     {% endif %}
                                     <button type="submit" class="card-button">
                                         See Content
@@ -251,9 +251,11 @@
                         <div class="appointment-details">
                             <div class="appointment-title">Academic Consultation</div>
                             <div class="appointment-meta">
-                                <span><i class="far fa-calendar"></i> April 10, 2025</span>
-                                <span><i class="far fa-clock"></i> 2:00 PM - 3:30 PM</span>
-                                <span><i class="fas fa-map-marker-alt"></i> Student A </span>
+                                {%for appointment in appointments%}
+                                    <span><i class="far fa-calendar"></i>{{appointment.date}}</span>
+                                    <span><i class="far fa-clock"></i> {{appointment.slot}}</span>
+                                    <span><i class="fas fa-map-marker-alt"></i>{{appointment.student}}</span>
+                                {%endfor%}
                             </div>
                         </div>
                         <div class="appointment-actions">

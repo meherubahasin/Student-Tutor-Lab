@@ -1,7 +1,7 @@
 from flask import Flask, request, url_for, render_template, redirect, session, jsonify, g, flash, send_file
 from pymongo import MongoClient 
 from bson.objectid import ObjectId
-from flask_bcrypt import Bcrypt
+#from flask_bcrypt import Bcrypt
 import base64
 import gridfs
 import os
@@ -12,7 +12,7 @@ import io
 app = Flask(__name__) 
 
 app.secret_key = 'CSE471'  
-bcrypt = Bcrypt(app)
+#bcrypt = Bcrypt(app)
 
 client = MongoClient('mongodb+srv://meherubahasin:22341011@cse471.rga8dmj.mongodb.net/') 
 db = client.flask_database['student_tutor_lab'] 
@@ -198,7 +198,7 @@ def login():
 
             if user['type']!='admin' and user['ban']==True:
                 return render_template('messages.html', message = "Your acocunt is banned! Please contact an admin for further information")
-            
+
             session['user_type'] = user['type']
             session['gsuite'] = user['gsuite']
             session['password'] = user['password']
@@ -248,15 +248,16 @@ def dashboard():
     if session['user_type'] == 'admin':
         return render_template('dashboard.html', user=session['gsuite'], courses=courses, users=users)
     elif session['user_type'] == 'ST':
+        st = user_collections.find_one({'gsuite': session['gsuite']})['initials']
         courses = []
         if "courses_assigned" in user:
             for course_id in user["courses_assigned"]:
                 course = courses_collections.find_one({"_id": ObjectId(course_id)})
                 if course:
                     courses.append(course)
-        return render_template('st_profile.html', user=user, courses = courses, appointments = appointments, selected_slots=user.get('consultation_slots', []))
+        return render_template('st_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'st': st}), selected_slots=user.get('consultation_slots', []))
     else:
-        return render_template('student_profile.html', user=user, courses = courses, appointments = appointments)
+        return render_template('student_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'student': session['gsuite']}))
     
 @app.route('/update_name', methods=['POST', 'GET'])
 def update_name():
@@ -426,33 +427,38 @@ def course_sts(course_code):
     return render_template('course_sts.html', course=course, st_profiles=st_profiles, consultations=consultation_data)
 
 #MODULE 3    
-@app.route('/st_appointment',  methods=['GET', 'POST']) 
-def appointment():
+@app.route('/st_appointment_<st_initials>',  methods=['GET', 'POST']) 
+def st_appointment(st_initials):
+    print(st_initials)
     if 'gsuite' not in session:
         return redirect(url_for('login'))
-    users = list(user_collections.find())
-    if request.method == 'POST':
-        user_id = request.form.get('user_id')
-        st = request.form.get('initials')
-        st = st_collections.find_one({'initials': st})
+
+    user_id = session['gsuite']
+    st = st_initials
+    st = st_collections.find_one({'initials': st})
+    if request.method == "POST":
         date = request.form.get('date')
         slot = request.form.get('slot')
-        appointment = {'st': st['initials'], 'student': user_id, 'date': date, 'slot': slot}
+        topic = request.form.get('meeting-topic')
+        appointment = {'st': st_initials, 'student': user_id, 'date': date, 'slot': slot, 'topic': topic}
         appointment_collections.insert_one(appointment)
-        # return jsonify({"appointment": str(appointment)})
-        return render_template('book_appointment.html')
+
+    return redirect(url_for('ST_Profile', st_initials = st_initials))
     
-@app.route('/display_date',  methods=['GET', 'POST']) 
-def display_consultation():
+@app.route('/ST_profile_<st_initials>',  methods=['GET', 'POST']) 
+def ST_Profile(st_initials):
     if 'gsuite' not in session:
         return redirect(url_for('login'))
-    if request.method == 'POST':
-        st = request.form.get('initials')
-        st = st_collections.find_one({'initials': st})
-        # format: day: slot 1 --> (start, end), slot 2 --> (start, end)
-        consultation_hours = st['consultation']
-        # return jsonify({"consultation": str(consultation_hours), "st": str(st['initials'])})
-        return render_template('book_appointment.html')
+    weekly_availability = []
+    st = st_initials
+    st = user_collections.find_one({'initials': st})
+
+    consulation = st['consultation_slots']
+    for slots in consulation:
+        data = slots.split("-")
+        df = {'day': data[0].strip(), 'start_time': data[1].strip(), 'end_time': data[2].strip()}
+        weekly_availability.append(df)
+    return render_template('book_appointment.html',  weekly_availability =  weekly_availability, st = st)
 
 @app.route('/search_courses',  methods=['GET', 'POST']) 
 def search_courses():
@@ -710,6 +716,9 @@ def ban_user():
     user_collections.update_one({'gsuite': gsuite},{'$set': {'ban': data}})
     profile=user_collections.find_one({"gsuite":gsuite})
     return redirect(url_for("display_student"))
+
+
+
 
 @app.route('/logout')
 def logout():

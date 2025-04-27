@@ -29,6 +29,22 @@
             background-color: white;
             color: var(--primary);
         }
+        .display{
+            
+            position: relative;
+            padding-bottom: 56.25%; 
+            height: 0;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        .display iframe{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 60%;
+            border: none;
+        }
         /* NAVBAR Start*/
         .navbar {
             position: sticky;
@@ -115,6 +131,7 @@
     <div class="course-container">
         
         <div class="select">
+            
             <div class="course-header">
                 <h1 class="course-code">{{ course.code }}</h1>
                 <h2 class="course-title">{{ course.title }}</h2>
@@ -128,8 +145,10 @@
                         </form>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">{{ course.STs|length }}</span>
-                        <span class="stat-label">STs</span>
+                        <a href="{{url_for('course_sts',course_code=course.code)}}">
+                            <span class="stat-number">{{ course.STs|length }}</span><span class="stat-label"> STs</span>
+                        </a>
+                        
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">{{ course.popquiz|length }}</span>
@@ -142,6 +161,12 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="display">
+            <iframe width="560" height="315" src="{{content}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    
     </div>   
         
 
