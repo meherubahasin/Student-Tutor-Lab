@@ -9,6 +9,7 @@
     display: flex;
     width: 100%;
     align-items: stretch;
+
     gap: 20px;
     font-family:
       Lexend,
@@ -53,8 +54,11 @@
   }
   
   .booking-content {
+    justify-self: center;
     align-self: center;
     margin-top: 39px;
+    /* margin-left: 15%;
+    margin-right: 15%; */
     width: 100%;
     max-width: 996px;
     display: flex;
@@ -62,11 +66,14 @@
   }
   
   .profile-section {
+    display: flex;
     width: 31%;
   }
   
   .profile-info {
     display: flex;
+    margin-left: 2rem;
+    margin-right: 4rem;
     flex-direction: column;
     align-items: stretch;
     font-family:
@@ -90,7 +97,7 @@
     align-items: center;
     justify-content: center;
     color: rgb(255, 255, 255);
-    font-size: 12px;
+    font-size: 40px;
   }
   
   .profile-name {
@@ -140,7 +147,7 @@
   
   .calendar-container {
     display: flex;
-    height: 340px;
+    height: 440px;
     width: 100%;
     flex-direction: column;
     align-items: center;
@@ -257,7 +264,7 @@
   
   .timeslot-group {
     border-radius: 5px;
-    border: 1px dashed rgb(151, 71, 255);
+    border: 1px dashed rgb(23, 20, 184);
     padding: 20px;
     color: #044343;
   }
@@ -427,4 +434,206 @@
       margin: 20px;
     }
   }
-  
+  #calendar {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+.fc-event {
+  cursor: pointer;
+}
+
+.fc-daygrid-event {
+  padding: 2px 4px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+}
+
+.booking-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.month-year {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px 15px;
+  border-radius: 5px;
+}
+
+.nav-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day {
+  min-height: 30px;
+  border: 1px solid #e0e0e0;
+  padding: 5px;
+  border-radius: 75px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.day-number {
+  font-weight: bold;
+}
+
+.day.today {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.day.selected {
+  background-color: rgb(143, 191, 235);
+  border-color: #1a80c4;
+}
+
+.day.other-month {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.day.has-slots {
+  background-color: #edf3ff;
+  border-color: #8fbaeb;
+}
+
+.timeslots-container {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  display: none;
+}
+
+.timeslot-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.timeslot-btn {
+  background-color: #e6f5ff;
+  border: 1px solid #8f98eb;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timeslot-btn:hover {
+  background-color: #0e0b8d;
+  color: white;
+}
+
+.timeslot-btn.booked {
+  background-color: #ffccc7;
+  border-color: #ffa39e;
+  cursor: not-allowed;
+}
+
+.no-slots {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.modal-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+}
+
+.confirm {
+  background-color: #1890ff;
+  color: white;
+}
+
+.cancel {
+  background-color: #f5f5f5;
+}
