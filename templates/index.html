@@ -129,10 +129,16 @@
                 <p>Your platform for academic collaboration and support</p>
             </div>
             {% if session['gsuite'] %}
-            <div class="redirect">
+            <div class="redirect" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                 <a href="{{url_for('display_courses')}}">
                     <button class="button">
                         <span class="button-span"> View Courses </span>
+                    </button>
+                </a>
+
+                <a href="{{url_for('report')}}">
+                    <button class="btn btn-danger">
+                        <span class="button-span"> Report </span>
                     </button>
                 </a>
                 {% else %}

@@ -6,7 +6,7 @@ import base64
 import gridfs
 import os
 from bson.regex import Regex
-from datetime import time
+from datetime import time, datetime
 import io
 
 app = Flask(__name__) 
@@ -24,6 +24,7 @@ appointment_collections = db.appointments
 user_collections = db.users
 st_collections = db.student_tutors
 requests_collections = db.requests
+report_collections = db.reports
 
 @app.before_request
 def before_request():
@@ -707,6 +708,22 @@ def display_student():
                 student_list.append(profile)
     return render_template("display_students.html",students=student_list)
 
+@app.route('/display_sts')
+def display_sts():
+    st_list=[]
+    if request.method=="GET":
+        profiles=list(user_collections.find())
+        for profile in profiles:
+            if profile['type']=='ST':
+                st_list.append(profile)
+    return render_template("display_sts.html",students=st_list)
+
+@app.route('/reports')
+def reports():
+    if request.method=="GET":
+        profiles=list(report_collections.find())
+    return render_template("display_reports.html",students=profiles)
+
 @app.route('/ban_user',methods=["POST"])
 def ban_user():
     gsuite=request.form.get("gsuite")
@@ -715,10 +732,57 @@ def ban_user():
     data = not(profile['ban'])
     user_collections.update_one({'gsuite': gsuite},{'$set': {'ban': data}})
     profile=user_collections.find_one({"gsuite":gsuite})
-    return redirect(url_for("display_student"))
+    if profile['type']=='student':
+        return redirect(url_for("display_student"))
+    else:
+        return redirect(url_for("display_sts"))
+
+@app.route('/report_button',methods=["GET"])
+def report():
+    profile=user_collections.find_one({'gsuite':session['gsuite']})
+    users=list(user_collections.find())
+    emails=[]
+    for dict in users:
+        
+        if dict['gsuite']!='admin' and dict['gsuite']!=session['gsuite']:
+            emails.append(dict['gsuite'])
+    return render_template("report.html", profile=profile,emails=emails)
+
+@app.route('/report_info',methods=["GET","POST"])
+def report_info():
+    profile=user_collections.find_one({'gsuite':session['gsuite']})
+    users=list(user_collections.find())
+    emails=[]
+    for dict in users:
+        
+        if dict['gsuite']!='admin' and dict['gsuite']!=session['gsuite']:
+            emails.append(dict['gsuite'])
+
+    if request.method=="POST":
+         selected_email = request.form.get('selected_email')
+         selected_reason = request.form.get('selected_reason')
+         other_reasons = request.form.get('other_reasons')
+
+         print(selected_email,selected_reason,other_reasons)
 
 
+         if selected_email!='Select user' and selected_reason!='Select Reason':  
+            print(selected_email, selected_reason, other_reasons)
+            date=datetime.now().strftime("%d-%m-%Y %H:%M:%S").split(" ")
+            
+            document={
+                "reported_by":profile['gsuite'],
+                "reported":selected_email,
+                "reason": selected_reason,
+                "other_reasons":other_reasons,
+                "reported_time": date[1],
+                "reported_date": date[0]
+            }
 
+            report_collections.insert_one(document)
+         
+    
+    return redirect(url_for('index'))
 
 @app.route('/logout')
 def logout():
