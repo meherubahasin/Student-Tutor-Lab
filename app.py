@@ -25,6 +25,7 @@ user_collections = db.users
 st_collections = db.student_tutors
 requests_collections = db.requests
 report_collections = db.reports
+rating_collections = db.rating
 
 @app.before_request
 def before_request():
@@ -256,9 +257,17 @@ def dashboard():
                 course = courses_collections.find_one({"_id": ObjectId(course_id)})
                 if course:
                     courses.append(course)
-        return render_template('st_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'st': st}), selected_slots=user.get('consultation_slots', []))
+        rating = rating_collections.find_one({"initial":st})
+        print(rating)
+        sum=0
+        if rating != None:
+            rating = rating["rating"]
+            for rate in rating:
+                sum+=rate
+            sum=sum/len(rating)
+        return render_template('st_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'st': st}), selected_slots=user.get('consultation_slots', []), rating=sum)
     else:
-        return render_template('student_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'student': session['gsuite']}))
+        return render_template('student_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'student': session['gsuite']}), current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S").split(" "))
     
 @app.route('/update_name', methods=['POST', 'GET'])
 def update_name():
@@ -783,6 +792,51 @@ def report_info():
          
     
     return redirect(url_for('index'))
+
+
+
+    
+
+@app.route('/rate', methods=["GET","POST"])
+def rate():
+    st=request.form.get('st')
+    time=request.form.get('time')
+    date=request.form.get('date')
+    
+    datetime_str = date+" "+time.split("-")[1]
+    datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%d %I:%M %p")
+    formatted_time = datetime_obj.strftime("%Y-%m-%d %I:%M %p")
+    current_time = datetime.now().strftime("%Y-%m-%d %I:%M %p")
+
+    if formatted_time<current_time:
+        return render_template('rate.html',st=st)
+    
+@app.route('/rate_and_review', methods=["GET","POST"])
+def rate_and_review():
+    rating = request.form.get('rating')
+    
+    review = request.form.get('review')
+    
+    st=request.form.get('st')
+    if rating!=None and review!=None:
+        profile=rating_collections.find_one({"initial":st})
+
+        if profile==None:
+            document={
+                "initial":st,
+                "rating":[int(rating)],
+                "review":[review]
+            }
+
+            rating_collections.insert_one(document)
+        else:
+            rating_collections.update_one({"initial":st},{"$push":{"rating":int(rating)}})
+            rating_collections.update_one({"initial":st},{"$push":{"review":review}})
+
+    return redirect(url_for('dashboard'))
+    
+    
+ 
 
 @app.route('/logout')
 def logout():

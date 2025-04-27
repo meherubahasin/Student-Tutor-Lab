@@ -126,6 +126,9 @@
                 <h3 class="profile-name">{{user.name}}</h3>
                 <div class="profile-id">ID: {{user.studentID}}</div>
                 <div class="profile-id">{{user.initials}}</div>
+                {%if rating%}
+                <div class="profile-id">rating: {{rating}}</div>
+                {%endif%}
             </div>
             
             <div class="nav-menu">

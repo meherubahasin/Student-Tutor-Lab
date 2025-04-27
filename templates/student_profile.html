@@ -192,7 +192,15 @@
                                     <span><i class="far fa-calendar"></i> {{appointment.date}}</span>
                                     <span><i class="far fa-clock"></i> {{appointment.slot}}</span>
                                     <span><i class="fas fa-map-marker-alt"></i> {{appointment.st}}</span>
+
+                                    <form action="{{url_for('rate')}}" method="POST">
+                                        <input type="hidden" name="st" value="{{appointment.st}}">
+                                        <input type="hidden" name="time" value="{{appointment.slot}}">
+                                        <input type="hidden" name="date" value="{{appointment.date}}">
+                                        <button type="submit" class="btn btn-secondary">Rate</button>
+                                    </form>
                                 </div>
+
                                 {%endfor%}
                             </div>
                         </div>
