@@ -1,17 +1,18 @@
-from flask import Flask, request, url_for, render_template, redirect, session, jsonify, g, flash
+from flask import Flask, request, url_for, render_template, redirect, session, jsonify, g, flash, send_file
 from pymongo import MongoClient 
 from bson.objectid import ObjectId
-from flask_bcrypt import Bcrypt
+#from flask_bcrypt import Bcrypt
 import base64
 import gridfs
 import os
 from bson.regex import Regex
 from datetime import time
+import io
 
 app = Flask(__name__) 
 
 app.secret_key = 'CSE471'  
-bcrypt = Bcrypt(app)
+#bcrypt = Bcrypt(app)
 
 client = MongoClient('mongodb+srv://meherubahasin:22341011@cse471.rga8dmj.mongodb.net/') 
 db = client.flask_database['student_tutor_lab'] 
@@ -39,7 +40,7 @@ def seed_products():
     st_collections.insert_many(st)
     
     users = [
-        {"gsuite": "meheruba@g.bracu.ac.bd", "password": "22341011", "type": "ST", "initals": "STMHA", "major":"Computer Science"},
+        {"gsuite": "meheruba@g.bracu.ac.bd", "password": "22341011", "type": "ST", "initials": "STMHA", "major":"Computer Science"},
         {"gsuite": "admin", "password": "1234", "type": "admin"},
         {"gsuite": "safa.amin@g.bracu.ac.bd", "password": "22341011", "type": "student", "major":"Computer Science Engineering"}
     ]
@@ -64,6 +65,21 @@ def seed_products():
     courses_collections.insert_many(course)
     return "Seeded!"
 
+def find_MIME(n):
+    if n=='pdf':
+        return "application/pdf"
+    elif n=="jpg" or n=='jpeg':
+        return "image/jpeg"
+    elif n=="png":
+        return "image/png"
+    elif n=="txt":
+        return "text/plain"
+    elif n=="doc":
+        return "application/msword"
+    elif n=="docx":
+        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    else:
+        return None
 
 # MODULE 1
 
@@ -117,14 +133,20 @@ def register():
               
             })
         print('Registration successful! Please log in.', 'success')
-        return redirect(url_for('index'))
+        return render_template('messages.html', message = "Registration Completed. Please wait for authentication before logging into your account.")
 
     return render_template('register.html')
+@app.route('/message')
+def message():
+    message = "Action Completed!"
+    return render_template('messages.html', message = message)
 
 @app.route('/requests', methods=['GET', 'POST'])
 def requests():
-    requests = list(requests_collections.find())
-    return render_template('requests.html', requests=requests)
+    if session.get('user_type', None) == 'admin':
+        requests = list(requests_collections.find())
+        return render_template('requests.html', requests=requests)
+    return redirect(url_for('index'))
     
 @app.route('/authenticate', methods=['GET', 'POST'])
 def authenticate():
@@ -183,8 +205,7 @@ def login():
 
             return render_template('index.html', user_id = session['gsuite'], user_type = session['user_type'])
 
-        print('Invalid username or password.')
-        return redirect(url_for('index'))
+        return render_template('messages.html', message = "Invalid credentials. Please check password and gsuite email properly.g")
 
     return render_template('register.html')
 
@@ -223,15 +244,16 @@ def dashboard():
     if session['user_type'] == 'admin':
         return render_template('dashboard.html', user=session['gsuite'], courses=courses, users=users)
     elif session['user_type'] == 'ST':
+        st = user_collections.find_one({'gsuite': session['gsuite']})['initials']
         courses = []
         if "courses_assigned" in user:
             for course_id in user["courses_assigned"]:
                 course = courses_collections.find_one({"_id": ObjectId(course_id)})
                 if course:
                     courses.append(course)
-        return render_template('st_profile.html', user=user, courses = courses, appointments = appointments, selected_slots=user.get('consultation_slots', []))
+        return render_template('st_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'st': st}), selected_slots=user.get('consultation_slots', []))
     else:
-        return render_template('student_profile.html', user=user, courses = courses, appointments = appointments)
+        return render_template('student_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'student': session['gsuite']}))
     
 @app.route('/update_name', methods=['POST', 'GET'])
 def update_name():
@@ -260,11 +282,15 @@ def update_courses():
     if request.method == 'POST':
         action = request.form['action']
         course_id = request.form.get('course')
-        
+        initials = user_collections.find_one({"gsuite":session['gsuite']})['initials']
         if action == "approve":
             user_collections.update_one(
                 {"gsuite": session['gsuite']},
                 {"$push": {"courses_assigned": ObjectId(course_id)}}
+            )
+            courses_collections.update_one(
+                {"_id": ObjectId(course_id)},
+                {"$push": {"STs": initials}}
             )
             print("Added!")
         elif action == "deny":
@@ -272,11 +298,16 @@ def update_courses():
                 {"gsuite": session['gsuite']},
                 {"$pull": {"courses_assigned": ObjectId(course_id)}}
             )
+            courses_collections.update_one(
+                {"_id": ObjectId(course_id)},
+                {"$pull": {"STs": initials}}
+            )
             print("Removed!")
         
         return redirect(url_for('update_courses'))
     user = user_collections.find_one({"gsuite": session['gsuite']})
     courses = list(courses_collections.find())
+
     return render_template('apply_courses.html', user=user, courses=courses)
 
 @app.route('/update_password', methods=['POST', 'GET'])
@@ -350,32 +381,80 @@ def select_slots():
                          days=days, 
                          time_slots=time_slots,
                          selected_slots=user.get('consultation_slots', []))   
+
+
+#feature 2 module 2
+@app.route('/course_sts/<course_code>')
+def course_sts(course_code):
     
+    course = courses_collections.find_one({"code": course_code})
+
+    if not course:
+        return f"Course with code {course_code} not found", 404  
+
+    
+    st_initials = course.get('STs', [])
+    print(f"Assigned STs: {st_initials}")  
+
+    st_profiles = []
+    for st in st_initials:
+        print(f"Searching for ST with initials: {st}")  
+        st_profile = user_collections.find_one({"initials": st, "type": "ST"})
+        
+        if st_profile:
+            print(f"Found ST profile: {st_profile}")  
+            st_profiles.append(st_profile)
+        else:
+            print(f"No ST found for initials: {st}") 
+
+   
+    print(f"ST Profiles: {st_profiles}")  
+
+   
+    consultation_data = {}
+    for st in st_initials:
+        doc = st_collections.find_one({"initials": st})
+        consultation_data[st] = doc.get("consultation", {}) if doc else {}
+
+    
+    print(f"Consultation Data: {consultation_data}")
+
+  
+    return render_template('course_sts.html', course=course, st_profiles=st_profiles, consultations=consultation_data)
 
 #MODULE 3    
-@app.route('/st_appointment',  methods=['GET', 'POST']) 
-def appointment():
-    users = list(user_collections.find())
-    if request.method == 'POST':
-        user_id = request.form.get('user_id')
-        st = request.form.get('initials')
-        st = st_collections.find_one({'initials': st})
+@app.route('/st_appointment_<st_initials>',  methods=['GET', 'POST']) 
+def st_appointment(st_initials):
+    print(st_initials)
+    if 'gsuite' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['gsuite']
+    st = st_initials
+    st = st_collections.find_one({'initials': st})
+    if request.method == "POST":
         date = request.form.get('date')
         slot = request.form.get('slot')
-        appointment = {'st': st['initials'], 'student': user_id, 'date': date, 'slot': slot}
+        topic = request.form.get('meeting_topic')
+        appointment = {'st': st_initials, 'student': user_id, 'date': date, 'slot': slot, 'topic': topic}
         appointment_collections.insert_one(appointment)
-        # return jsonify({"appointment": str(appointment)})
-        return render_template('book_appointment.html')
+
+    return redirect(url_for('ST_Profile', st_initials = st_initials))
     
-@app.route('/display_date',  methods=['GET', 'POST']) 
-def display_consultation():
-    if request.method == 'POST':
-        st = request.form.get('initials')
-        st = st_collections.find_one({'initials': st})
-        # format: day: slot 1 --> (start, end), slot 2 --> (start, end)
-        consultation_hours = st['consultation']
-        # return jsonify({"consultation": str(consultation_hours), "st": str(st['initials'])})
-        return render_template('book_appointment.html')
+@app.route('/ST_profile_<st_initials>',  methods=['GET', 'POST']) 
+def ST_Profile(st_initials):
+    if 'gsuite' not in session:
+        return redirect(url_for('login'))
+    weekly_availability = []
+    st = st_initials
+    st = user_collections.find_one({'initials': st})
+
+    consulation = st['consultation_slots']
+    for slots in consulation:
+        data = slots.split("-")
+        df = {'day': data[0].strip(), 'start_time': data[1].strip(), 'end_time': data[2].strip()}
+        weekly_availability.append(df)
+    return render_template('book_appointment.html',  weekly_availability =  weekly_availability, st = st)
 
 @app.route('/search_courses',  methods=['GET', 'POST']) 
 def search_courses():
@@ -397,6 +476,8 @@ def search_courses():
 
 @app.route('/display_courses',  methods=['GET', 'POST']) 
 def display_courses():
+    if 'gsuite' not in session:
+        return redirect(url_for('login'))
     search_query = request.args.get('search_query', '').strip()
     if search_query:
         courses = search_courses()
@@ -406,6 +487,7 @@ def display_courses():
     course_details = []
     users = list(user_collections.find())
     user_id = request.form.get('user_id')
+   
 
     for course in courses:
         course_details.append({
@@ -420,23 +502,46 @@ def display_courses():
     return render_template('courses.html', courses=course_details, users=users, user_id = user_id)
     # return jsonify({"courses available": str(course_details), "current user": str(user_id)})
   
-@app.route('/coursecontent', methods=['GET', 'POST'])
-def coursecontent():
+@app.route('/coursecontent_<course_code>', methods=['GET', 'POST'])
+def coursecontent(course_code):
+    if 'gsuite' not in session:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         user_id = request.form.get('user_id')
         user_id = user_collections.find_one({'gsuite':user_id})
-        # user_type = user_id['type']
-        course_code = request.form.get('course_code')
         course = courses_collections.find_one({"code": course_code})
+        type=session['user_type']
 
-    # return render_template('fullcourse.html', course=course, user_id = user_id)
+    
     if request.args.get('format') == 'json':
         return jsonify({"viewing course": course})
-    return render_template('fullcourse.html', course=course)
-    
+    course = courses_collections.find_one({"code": course_code})
+    type=session["user_type"]
+    approved=None
+    if type =='ST':
+        initial = user_collections.find_one({"gsuite":session['gsuite']})['initials'] 
+        if initial in courses_collections.find_one({"code":course_code})["STs"]:
+            approved=True
+
+    #return render_template('fullcourse.html', course=course,type=type, course_code=course_code,approved=approved)
+    answers=None
+    answered_questions=[]
+    if type == 'student':
+        popquiz=user_collections.find_one({"gsuite":session['gsuite']})["popquiz"]
+        for dicts in popquiz:
+            for k,v in dicts.items():
+                if k==course_code:
+                    answers=v
+        if answers!=None:
+            for dicts in answers:
+                answered_questions.append(dicts['q'])
+
+    return render_template('fullcourse.html', course=course,type=type, course_code=course_code,approved=approved, answers=answers, answered_questions=answered_questions)
     
 @app.route('/viewcontent', methods=['GET', 'POST'])
 def viewcontent():
+    if 'gsuite' not in session:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         users = list(user_collections.find())
         course_code = request.form.get('course-code')
@@ -447,6 +552,148 @@ def viewcontent():
 
     return render_template('course_content.html',  course=course, content = content)
     # return jsonify({"clicked at": content, "from": course_code})
+
+@app.route('/view_resource', methods=["GET","POST"])
+def view_resource():
+    if 'gsuite' not in session:
+        return redirect(url_for('login'))
+    if request.method=="POST":
+        course_code=request.form.get("course_code")
+        file_name=request.form.get("file_name")
+        temp=file_name
+        file_type = file_name.split('.')[-1]
+        mime=find_MIME(file_type)
+        file_name=file_name.replace(".","|")+"|"+mime
+        
+        file=io.BytesIO(courses_collections.find_one({"code":course_code})[file_name])
+        return send_file(
+            file,  
+            as_attachment=False,  
+            download_name=temp,  
+            mimetype=mime  
+        )
+    
+
+@app.route('/add_resources_<course_code>', methods=["GET","POST"])
+def add_resources(course_code):
+    file_name = None
+    file_type = None
+    if request.method == 'POST':
+        uploaded_file = request.files.get('file')
+        resources = request.form['resource']
+        if uploaded_file:
+            file_name = uploaded_file.filename  
+            file_type = uploaded_file.content_type 
+            
+
+            if find_MIME(file_name.split('.')[-1])==None:
+                print("MIME")
+                return redirect(url_for("coursecontent",course_code=course_code))
+            if resources == "lectures":
+                if file_name not in courses_collections.find_one({"code":course_code})["lectures"]:
+                    courses_collections.update_one({"code":course_code},{"$push":{"lectures":file_name}})
+                file_name=file_name.replace(".","|")
+                courses_collections.update_one({"code": course_code},{"$set": {str(file_name+"|"+file_type):uploaded_file.read()}})
+            else:
+                if file_name not in courses_collections.find_one({"code":course_code})["qas"]:
+                    courses_collections.update_one({"code":course_code},{"$push":{"qas":file_name}})
+                file_name=file_name.replace(".","|")
+                courses_collections.update_one({"code": course_code},{"$set": {str(file_name+"|"+file_type):uploaded_file.read()}})
+    
+    return redirect(url_for("coursecontent",course_code=course_code))
+
+
+@app.route('/delete_resources', methods=["GET","POST"])
+def delete_resources():
+    if request.method=="POST":
+        course_code=request.form.get("course_code")
+        file_name=request.form.get("file_name")
+        
+
+        file_type = file_name.split('.')[-1]
+        mime=find_MIME(file_type)
+        
+        query = {"code": course_code}  
+        update = {"$pull": {"qas": file_name}} 
+        courses_collections.update_one(query, update)
+
+        file_name=file_name.replace(".","|")
+        update = {"$unset": {file_name+"|"+mime: ""}} 
+        courses_collections.update_one(query, update)
+    
+    return redirect(url_for("coursecontent",course_code=course_code))
+
+@app.route('/create_quiz<course_code>',methods = ['GET','POST'])
+def create_quiz(course_code):
+    if request.method =='POST':
+        question = request.form.get('question')
+        st_answer = request.form.get('st_answer')
+        
+        popquiz = {'q':question,'a':st_answer}
+
+        if popquiz not in courses_collections.find_one({"code":course_code})['popquiz']:
+            courses_collections.update_one({"code": course_code},{"$push": {"popquiz":popquiz}})
+        
+    return redirect(url_for("coursecontent",course_code=course_code))
+
+
+
+@app.route('/delete_quiz<course_code>',methods = ['GET','POST'])
+def delete_quiz(course_code):
+    if request.method=="POST":
+        question=request.form.get("question")
+        st_answer=request.form.get("st_answer")
+        popquiz = {'q':question,'a':st_answer}
+        courses_collections.update_one({"code": course_code},{"$pull": {"popquiz":popquiz}})
+    return redirect(url_for("coursecontent",course_code=course_code))
+
+
+
+@app.route('/submuit_quiz<course_code>',methods = ['GET','POST'])
+def submit_quiz(course_code):
+    if "gsuite" not in session.keys():
+        return redirect(url_for("logout"))
+        
+    if request.method=="POST":
+        question=request.form.get("question")
+        answer=request.form.get("answer")
+        gsuite=session['gsuite']
+        
+        
+
+        popquiz = {'q':question,'a':answer}
+
+        if not any(course_code in item for item in user_collections.find_one({"gsuite":gsuite})['popquiz']):
+            
+            data = {course_code: []}
+            user_collections.update_one(
+                {"gsuite": gsuite},
+                {"$push": {"popquiz": data}}
+            )
+
+        profile=user_collections.find_one({"gsuite":session["gsuite"]})   
+
+        for x in profile['popquiz']:
+            for k,v in x.items():
+                if k == course_code:
+                    for item in x[k]:
+                        if popquiz['q'] == item['q']:
+                            return redirect(url_for("coursecontent",course_code=course_code))
+
+        prev=False
+        for x in profile['popquiz']:
+            for k,v in x.items():
+                if k==course_code:
+                    x[k].append(popquiz)
+                    break
+        user_collections.update_one({"gsuite":session["gsuite"]},{"$set":{"popquiz":profile["popquiz"]}})
+
+
+
+    return redirect(url_for("coursecontent",course_code=course_code))
+
+
+
 
 @app.route('/logout')
 def logout():
