@@ -181,13 +181,13 @@
                     {% endfor %}
                 ];
                 
-                // Calendar state
+              
                 let currentMonth = new Date().getMonth();
                 let currentYear = new Date().getFullYear();
                 let selectedDate = null;
                 let selectedSlot = null;
                 
-                // DOM elements
+         
                 const monthYearElement = document.getElementById('month-year');
                 const calendarDaysElement = document.getElementById('calendar-days');
                 const prevMonthBtn = document.getElementById('prev-month');
@@ -199,33 +199,31 @@
                 const bookingDetails = document.getElementById('booking-details');
                 const confirmBookingBtn = document.getElementById('confirm-booking');
                 const cancelBookingBtn = document.getElementById('cancel-booking');
-                
-                // Initialize calendar
+ 
                 function initCalendar() {
                     updateCalendar();
                     setupEventListeners();
                 }
-                
-                // Update calendar display
+
                 function updateCalendar() {
-                    // Update month/year display
+
                     monthYearElement.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
                     
-                    // Clear previous days
+
                     calendarDaysElement.innerHTML = '';
                     
-                    // Get first day of month and total days in month
+
                     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
                     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
                     const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
                     
-                    // Previous month's days
+
                     for (let i = firstDay - 1; i >= 0; i--) {
                         const dayElement = createDayElement(daysInPrevMonth - i, true);
                         calendarDaysElement.appendChild(dayElement);
                     }
                     
-                    // Current month's days
+              
                     const today = new Date();
                     for (let i = 1; i <= daysInMonth; i++) {
                         const date = new Date(currentYear, currentMonth, i);
@@ -234,14 +232,14 @@
                                         currentMonth === today.getMonth() && 
                                         currentYear === today.getFullYear();
                         
-                        // Check if this day has any available slots
+
                         const hasSlots = weeklySlots.some(slot => slot.day === dayOfWeek);
                         
                         const dayElement = createDayElement(i, false, isToday, hasSlots);
                         calendarDaysElement.appendChild(dayElement);
                     }
                     
-                    // Next month's days (to fill the grid)
+
                     const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
                     const nextMonthDays = totalCells - (firstDay + daysInMonth);
                     
@@ -251,7 +249,7 @@
                     }
                 }
                 
-                // Create a day element
+    
                 function createDayElement(dayNumber, isOtherMonth, isToday = false, hasSlots = false) {
                     const dayElement = document.createElement('div');
                     dayElement.className = 'day';
@@ -284,18 +282,18 @@
                     return dayElement;
                 }
                 
-                // Show time slots for selected date
+
                 function showTimeSlotsForDate(date) {
                     const dayOfWeek = getDayName(date.getDay());
                     const dateString = formatDate(date);
                     
-                    // Filter slots for this day of week
+               
                     const slotsForDay = weeklySlots.filter(slot => slot.day === dayOfWeek);
                     
-                    // Update the timeslots container header
+
                     timeslotDateElement.textContent = `Available Slots for ${dayOfWeek}, ${formatDisplayDate(date)}`;
                     
-                    // Clear previous slots
+     
                     timeslotGroupElement.innerHTML = '';
                     
                     if (slotsForDay.length === 0) {
@@ -320,12 +318,11 @@
                             timeslotGroupElement.appendChild(slotElement);
                         });
                     }
-                    
-                    // Show the timeslots container
+
                     timeslotsContainer.style.display = 'block';
                 }
                 
-                // Helper functions
+      
                 function getMonthName(monthIndex) {
                     const months = [
                         'January', 'February', 'March', 'April', 'May', 'June',
@@ -394,7 +391,7 @@
 
 
 
-                // Replace the confirmBookingBtn event listener with this:
+
                 confirmBookingBtn.addEventListener('click', () => {
                     if (selectedSlot) {
                         const meetingTopic = document.getElementById('meeting-topic').value;
@@ -404,10 +401,10 @@
                             return;
                         }
                         
-                        // Format the slot as expected by your backend
+
                         const formattedSlot = `${selectedSlot.start_time}-${selectedSlot.end_time}`;
                         
-                        // Set the form values
+      
                         document.getElementById('form-date').value = selectedSlot.date;
                         document.getElementById('form-slot').value = formattedSlot;
                         document.getElementById('form-meeting-topic').value = meetingTopic;
@@ -415,7 +412,7 @@
                         const form = document.getElementById('hidden-booking-form');
                         
                         
-                        // Submit the form
+               
                         form.submit();
                     }
                 });
