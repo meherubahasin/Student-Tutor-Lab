@@ -157,8 +157,9 @@
             aria-label="dropdown scrollbar"
             for="state-dropdown-1"
             class="trigger">Lectures</label>
-        
+          
           <form class="list webkit-scrollbar" role="list" dir="auto" action="/viewcontent" method="POST">
+
             {%for item in course.lectures%}
               <div class="listitem" role="listitem">
                 <input type="hidden" name="resource" value="lectures">
@@ -168,9 +169,27 @@
                   {{item}}
                 </button>
               </div>
+              {% if approved and type == "admin" %}
+                      <form action="/delete_resources" style="padding-bottom: 23px; padding-left: 17px; margin-bottom: -5px; margin-top: -10px;" method="POST">
+                          <input type="hidden" name="file_name" value="{{item}}">
+                          <input type="hidden" name="course_code" value="{{course.code}}">
+                          <input type="hidden" name="resource" value="lectures">
+                          <button class="btn btn-danger">Delete</button>
+                      </form>
+              {%endif%}
             {%endfor%}
           </form>
-        </div>
+          
+          {% if approved and type == "admin" %}
+              <form action="{{url_for('add_resources',course_code=course.code)}}" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                  <input type="hidden" name="resource" value="lectures">
+                  <input type="file" name="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                  <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload</button>
+                </div>
+
+              </form>
+          {%endif%}
             <!-- Solved Paper -->
             <div class="dropdown">
                 <input

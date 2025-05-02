@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Student Tutor Lab</title>
+        <meta name="description" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            :root{
+            --primary: #0e141c;
+                --accent: #4b88d8;
+                --accent2: #607ea2;
+                --light: #bdb3a3;
+                --dark: #333;
+                --white: #ffffff;
+                --gray-light: #f5f5f5;
+            }
+    
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Montserrat', 'Helvetica', 'Verdana', sans-serif;
+            }
+    
+            body {
+                background-color: white;
+                color: var(--primary);
+            }
+            /* NAVBAR Start*/
+    .navbar {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        transition: 0.3s ease-out;
+        background-color: var(--primary);
+        color: white;
+        padding: 2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        z-index: 1000;
+    }
+    
+    .logo {
+        padding: 0 2.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: skyblue;
+        text-decoration: none;
+    }
+    
+    .nav-list {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0 1.5rem;
+        align-items: center;
+    }
+    
+    .nav-list li {
+        display: inline-block;
+    }
+    
+    .nav-list li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    
+    .nav-list li a:hover {
+        background-color: var(--accent);
+        color: black;
+        border-radius: 30px;
+    }
+    
+    .menu-toggle {
+        display: none;
+    }
+    
+    .hamburger {
+        display: none;
+        cursor: pointer;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 21px;
+    }
+    
+    .hamburger span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: var(--accent2);
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+    a {
+  color: inherit; 
+  text-decoration: none; 
+}    
+.notifications-container {
+  width: 420px;
+  height: auto;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: slideIn 0.4s ease-out;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.success {
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(74, 188, 222, 0.2);
+}
+
+.success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.success-svg {
+  color: var(--accent);
+  width: 1.5rem;
+  height: 1.5rem;
+  filter: drop-shadow(0 0 8px rgba(74, 163, 222, 0.4));
+  animation: pulse 2s infinite;
+}
+
+.success-prompt-wrap {
+  margin-left: 1rem;
+}
+
+.success-prompt-heading {
+  font-weight: 700;
+  color: rgb(22, 83, 101);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkmark {
+  color: rgb(74, 200, 222);
+  animation: scaleCheck 0.3s ease-in-out;
+}
+
+.success-prompt-prompt {
+  margin-top: 0.75rem;
+  color: rgb(21, 107, 128);
+  line-height: 1.5;
+}
+
+.success-button-container {
+  display: flex;
+  margin-top: 1rem;
+  gap: 0.75rem;
+}
+
+.success-button-main {
+  padding: 0.5rem 1rem;
+  background-color: rgb(22, 83, 101);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(22, 101, 52, 0.2);
+}
+
+.success-button-main:hover {
+  background-color: rgb(21, 107, 128);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 101, 52, 0.3);
+}
+
+.success-button-secondary {
+  padding: 0.5rem 1rem;
+  background-color: rgb(240 253 244);
+  color: rgb(22, 72, 101);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(22, 63, 101, 0.2);
+  transition: all 0.2s ease;
+}
+
+.success-button-secondary:hover {
+  background-color: rgb(220, 243, 234);
+  border-color: rgba(22, 101, 52, 0.3);
+  transform: translateY(-1px);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleCheck {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+.success-button-main:active,
+.success-button-secondary:active {
+  transform: scale(0.95);
+}
+
+            
+        </style>
+    </head>
+
+    <body>
+        {%block content%}
+        {% include 'navbar.html' %}
+        {%endblock%}
+
+        <div class="main">
+            <div class="img-container">
+                <img class="bracu-img" src="{{ url_for('static', filename='img/BRACU-bg.jpg') }}" alt="BRACU">
+                <div class="gradient"></div>
+            </div>
+
+        </div>
+        <div class="hero-content">
+          <div class="notifications-container">
+            <div class="success">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="success-svg"
+                >
+                    <path
+                    clip-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    fill-rule="evenodd"
+                    ></path>
+                </svg>
+                </div>
+                <div class="success-prompt-wrap">
+                <p class="success-prompt-heading">
+                    Action Completed!
+                    <span class="checkmark">✓</span>
+                </p>
+                <div class="success-prompt-prompt">
+                    <p>
+                    {{message}}
+                    </p>
+                </div>
+                <div class="success-button-container">
+                    <button class="success-button-main" type="button"><a href="{{ url_for('index') }}">Home</a></button>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        
+  
+
+    </body>
+</html>
