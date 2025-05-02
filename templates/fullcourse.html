@@ -127,8 +127,9 @@
 
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">{{ course.STs|length }}</span>
-                        <span class="stat-label">STs</span>
+                        <a href="{{url_for('course_sts',course_code=course.code)}}">
+                        <span class="stat-number">{{ course.STs|length }}</span><span class="stat-label">STs</span>
+                        </a>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">{{ course.popquiz|length }}</span>
