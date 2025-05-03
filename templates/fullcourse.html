@@ -9,104 +9,248 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root{
-        --primary: #0e141c;
-            --accent: #4b88d8;
-            --accent2: #607ea2;
-            --light: #bdb3a3;
-            --dark: #333;
-            --white: #ffffff;
-            --gray-light: #f5f5f5;
+:root {
+                --primary: #0e141c;
+                --accent: #4b88d8;
+                --accent2: #607ea2;
+                --light: #bdb3a3;
+                --accent2: #333;
+            }
+
+            * {
+                margin: 0;
+                box-sizing: border-box;
+                font-family: 'Montserrat', 'Helvetica', 'Verdana', sans-serif;
+            }
+            .mobile-menu-toggle {
+            display: none;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', 'Helvetica', 'Verdana', sans-serif;
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
         }
 
-        body {
-            background-color: white;
-            color: var(--primary);
-        }
-        /* NAVBAR Start*/
-.navbar {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    transition: 0.3s ease-out;
-    background-color: var(--primary);
-    color: white;
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    z-index: 1000;
-}
+            .navbar {
+                position: sticky;
+                top: 0;
+                width: 100%;
+                height: 120px;
+                display: flex;
+                align-items: center;
+                transition: 0.3s ease-out;
+                background-color: var(--primary);
+                color: white;
+                display: flex;
+                justify-content: space-between;
+                z-index: 1000;
+            }
 
-.logo {
-    padding: 0 2.5rem;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: skyblue;
-    text-decoration: none;
-}
+            .logo {
+                padding: 0 2.5rem;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: skyblue;
+                text-decoration: none;
+            }
 
-.nav-list {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0 1.5rem;
-    align-items: center;
-}
+            .nav-list {
+                list-style: none;
+                display: flex;
+                gap: 1.5rem;
+                margin: 0;
+                padding: 0 1.5rem;
+                align-items: center;
+            }
 
-.nav-list li {
-    display: inline-block;
-}
+            .nav-list li {
+                display: inline-block;
+            }
 
-.nav-list li a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
+            .nav-list li a {
+                color: white;
+                text-decoration: none;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+                display: inline-block;
+            }
 
-.nav-list li a:hover {
-    background-color: var(--accent);
-    color: black;
-    border-radius: 30px;
-}
+            .nav-list li a:hover {
+                background-color: var(--accent);
+                color: black;
+                border-radius: 30px;
+            }
 
-.menu-toggle {
-    display: none;
-}
+            .menu-toggle {
+                display: none;
+            }
 
-.hamburger {
-    display: none;
-    cursor: pointer;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-}
+            .hamburger {
+                display: none;
+                cursor: pointer;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 30px;
+                height: 21px;
+            }
 
-.hamburger span {
-    display: block;
-    height: 3px;
-    width: 100%;
-    background-color: var(--accent2);
-    border-radius: 3px;
-    transition: all 0.3s ease;
-}
+            .hamburger span {
+                display: block;
+                height: 3px;
+                width: 100%;
+                background-color: var(--accent2);
+                border-radius: 3px;
+                transition: all 0.3s ease;
+            }
 
-        
+
+            @media (max-width: 900px) {
+                .navbar {
+                    height: 70px;
+                    padding: 0 1.5rem !important;
+                }
+                
+                .logo {
+                    padding: 0;
+                    font-size: 1.2rem;
+                }
+                
+
+                .hamburger {
+                    display: flex !important;
+                    z-index: 1001;
+                }
+                
+                .hamburger span {
+                    background-color: white !important;
+                }
+                
+                .nav-list {
+                    position: fixed;
+                    top: 70px;
+                    left: 0;
+                    width: 100%;
+                    background-color: var(--primary);
+                    flex-direction: column;
+                    padding: 1rem 0;
+                    gap: 0;
+                    clip-path: circle(0px at 90% -10%);
+                    transition: clip-path 0.5s ease;
+                    z-index: 1000;
+                }
+                
+                .menu-toggle:checked ~ .nav-list {
+                    clip-path: circle(1000px at 90% -10%);
+                }
+                
+                .nav-list li {
+                    width: 100%;
+                    text-align: center;
+                    margin: 0;
+                    padding: 0.5rem 0;
+                }
+                
+                .nav-list li a {
+                    display: block;
+                    padding: 0.8rem;
+                    width: 100%;
+                }
+                
+                .menu-toggle:checked ~ .hamburger span:nth-child(1) {
+                    transform: translateY(9px) rotate(45deg);
+                }
+                
+                .menu-toggle:checked ~ .hamburger span:nth-child(2) {
+                    opacity: 0;
+                }
+                
+                .menu-toggle:checked ~ .hamburger span:nth-child(3) {
+                    transform: translateY(-9px) rotate(-45deg);
+                }
+
+                .hero-content {
+                    flex-direction: column;
+                    justify-content: center;
+                    padding: 0 5%;
+                }
+                
+                .hero-text {
+                    padding-right: 0;
+                    margin-bottom: 2rem;
+                }
+                
+                .hero-text h1 {
+                    font-size: 2rem;
+                    line-height: 1.3;
+                }
+                
+                .hero-text p {
+                    font-size: 1rem;
+                }
+                
+                .redirect {
+                    width: 100%;
+                    margin-top: 1rem;
+                }
+                
+
+                .img-container {
+                    height: 60vh;
+                }
+                
+                .gradient {
+                    height: 60vh;
+                }
+                
+                .button {
+                    padding: 12px 24px;
+                    font-size: 1rem;
+                }
+                
+
+                .form-container {
+                    margin: 3rem auto 0;
+                    width: 90%;
+                    max-width: 380px;
+                }
+            }
+
+
+            @media (max-width: 480px) {
+                .hero-text h1 {
+                    font-size: 1.8rem;
+                }
+                
+                .hero-text p {
+                    font-size: 0.9rem;
+                }
+                
+                .navbar {
+                    height: 60px;
+                }
+                
+                .nav-list {
+                    top: 60px;
+                }
+                
+                .logo {
+                    font-size: 1.1rem;
+                }
+                
+                .img-container,
+                .gradient {
+                    height: 50vh;
+                }
+            }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -127,9 +271,9 @@
 
                     </div>
                     <div class="stat-item">
-                        <a href="{{url_for('course_sts',course_code=course.code)}}">
-                        <span class="stat-number">{{ course.STs|length }}</span><span class="stat-label">STs</span>
-                        </a>
+                      <a href="{{url_for('course_sts',course_code=course.code)}}">
+                        <span class="stat-number">{{ course.STs|length }}</span><span class="stat-label"> STs</span>
+                      </a>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">{{ course.popquiz|length }}</span>
@@ -137,7 +281,7 @@
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">{{ course.qas|length }}</span>
-                        <span class="stat-label">Solved Papers</span>
+                        <span class="stat-label">Resources</span>
                     </div>
                 </div>
             </div>
@@ -190,7 +334,8 @@
 
               </form>
           {%endif%}
-            <!-- Solved Paper -->
+        </div>
+            <!-- Resources -->
             <div class="dropdown">
                 <input
                   hidden=""
@@ -202,29 +347,44 @@
                 <label
                   aria-label="dropdown scrollbar"
                   for="state-dropdown-2"
-                  class="trigger">Solved Paper</label>
+                  class="trigger">Resources</label>
               
-                <form class="list webkit-scrollbar" role="list" dir="auto" action="/viewcontent" method="POST">
+                
                     
                   {%for item in course.qas%}
-                    <div class="listitem" role="listitem">
-                      <input type="hidden" name="course-code" value="{{course.code}}">
-                      <input type="hidden" name="resource" value="qas">
-                      <input type="hidden" name="index" value="{{course.qas.index(item)}}">
-                      <button type="submit" class="article">
-                        {{item}}
-                      </button>
-                    </div>
-                    {% if 'type' == "ST" or 'type' == "admin" %}
-                    <form action="/add-resources">
-                        <button class="Btn" >Add Resources
-                            <svg class="svg" viewBox="0 0 512 512">
-                              <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
+                    <form class="list webkit-scrollbar" role="list" dir="auto" action="/view_resource" method="POST">
+                      <div class="listitem" role="listitem">
+                        <input type="hidden" name="course_code" value="{{course.code}}">
+                        <input type="hidden" name="file_name" value="{{item}}">
+                        <button type="submit" class="article">
+                          {{item}}
                         </button>
+                      </div>
                     </form>
+
+                    {% if approved or type == "admin" %}
+                      <form action="/delete_resources" style="padding-bottom: 23px; padding-left: 17px; margin-bottom: -5px; margin-top: -10px;" method="POST">
+                          <input type="hidden" name="file_name" value="{{item}}">
+                          <input type="hidden" name="course_code" value="{{course.code}}">
+                          <input type="hidden" name="resource" value="qas">
+                          <button class="btn btn-danger">Delete</button>
+                      </form>
                     {%endif%}
+
                   {%endfor%}
-                </form>
+                  
+                
+
+              {% if approved or type == "admin" %}
+              <form action="{{url_for('add_resources',course_code=course.code)}}" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                  <input type="hidden" name="resource" value="qas">
+                  <input type="file" name="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                  <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload</button>
+                </div>
+
+              </form>
+              {%endif%}
               </div>
 
 
