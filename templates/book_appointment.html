@@ -11,104 +11,248 @@
         <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
         <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
         <style>
-          :root{
-          --primary: #0e141c;
-              --accent: #4b88d8;
-              --accent2: #607ea2;
-              --light: #bdb3a3;
-              --dark: #333;
-              --white: #ffffff;
-              --gray-light: #f5f5f5;
-          }
-  
-          * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-              font-family: 'Montserrat', 'Helvetica', 'Verdana', sans-serif;
-          }
-  
-          body {
-              background-color: white;
-              color: var(--primary);
-          }
-          /* NAVBAR Start*/
-  .navbar {
-      position: sticky;
-      top: 0;
-      width: 100%;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      transition: 0.3s ease-out;
-      background-color: var(--primary);
-      color: white;
-      padding: 2rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      z-index: 1000;
-  }
-  
-  .logo {
-      padding: 0 2.5rem;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: skyblue;
-      text-decoration: none;
-  }
-  
-  .nav-list {
-      list-style: none;
-      display: flex;
-      gap: 1.5rem;
-      margin: 0;
-      padding: 0 1.5rem;
-      align-items: center;
-  }
-  
-  .nav-list li {
-      display: inline-block;
-  }
-  
-  .nav-list li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-      display: inline-block;
-  }
-  
-  .nav-list li a:hover {
-      background-color: var(--accent);
-      color: black;
-      border-radius: 30px;
-  }
-  
-  .menu-toggle {
-      display: none;
-  }
-  
-  .hamburger {
-      display: none;
-      cursor: pointer;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 30px;
-      height: 21px;
-  }
-  
-  .hamburger span {
-      display: block;
-      height: 3px;
-      width: 100%;
-      background-color: var(--accent2);
-      border-radius: 3px;
-      transition: all 0.3s ease;
-  }
-  
-          
+:root {
+                --primary: #0e141c;
+                --accent: #4b88d8;
+                --accent2: #607ea2;
+                --light: #bdb3a3;
+                --accent2: #333;
+            }
+
+            * {
+                margin: 0;
+                box-sizing: border-box;
+                font-family: 'Montserrat', 'Helvetica', 'Verdana', sans-serif;
+            }
+            .mobile-menu-toggle {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+        }
+
+            .navbar {
+                position: sticky;
+                top: 0;
+                width: 100%;
+                height: 120px;
+                display: flex;
+                align-items: center;
+                transition: 0.3s ease-out;
+                background-color: var(--primary);
+                color: white;
+                display: flex;
+                justify-content: space-between;
+                z-index: 1000;
+            }
+
+            .logo {
+                padding: 0 2.5rem;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: skyblue;
+                text-decoration: none;
+            }
+
+            .nav-list {
+                list-style: none;
+                display: flex;
+                gap: 1.5rem;
+                margin: 0;
+                padding: 0 1.5rem;
+                align-items: center;
+            }
+
+            .nav-list li {
+                display: inline-block;
+            }
+
+            .nav-list li a {
+                color: white;
+                text-decoration: none;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+                display: inline-block;
+            }
+
+            .nav-list li a:hover {
+                background-color: var(--accent);
+                color: black;
+                border-radius: 30px;
+            }
+
+            .menu-toggle {
+                display: none;
+            }
+
+            .hamburger {
+                display: none;
+                cursor: pointer;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 30px;
+                height: 21px;
+            }
+
+            .hamburger span {
+                display: block;
+                height: 3px;
+                width: 100%;
+                background-color: var(--accent2);
+                border-radius: 3px;
+                transition: all 0.3s ease;
+            }
+
+
+            @media (max-width: 900px) {
+                .navbar {
+                    height: 70px;
+                    padding: 0 1.5rem !important;
+                }
+                
+                .logo {
+                    padding: 0;
+                    font-size: 1.2rem;
+                }
+                
+
+                .hamburger {
+                    display: flex !important;
+                    z-index: 1001;
+                }
+                
+                .hamburger span {
+                    background-color: white !important;
+                }
+                
+                .nav-list {
+                    position: fixed;
+                    top: 70px;
+                    left: 0;
+                    width: 100%;
+                    background-color: var(--primary);
+                    flex-direction: column;
+                    padding: 1rem 0;
+                    gap: 0;
+                    clip-path: circle(0px at 90% -10%);
+                    transition: clip-path 0.5s ease;
+                    z-index: 1000;
+                }
+                
+                .menu-toggle:checked ~ .nav-list {
+                    clip-path: circle(1000px at 90% -10%);
+                }
+                
+                .nav-list li {
+                    width: 100%;
+                    text-align: center;
+                    margin: 0;
+                    padding: 0.5rem 0;
+                }
+                
+                .nav-list li a {
+                    display: block;
+                    padding: 0.8rem;
+                    width: 100%;
+                }
+                
+                .menu-toggle:checked ~ .hamburger span:nth-child(1) {
+                    transform: translateY(9px) rotate(45deg);
+                }
+                
+                .menu-toggle:checked ~ .hamburger span:nth-child(2) {
+                    opacity: 0;
+                }
+                
+                .menu-toggle:checked ~ .hamburger span:nth-child(3) {
+                    transform: translateY(-9px) rotate(-45deg);
+                }
+
+                .hero-content {
+                    flex-direction: column;
+                    justify-content: center;
+                    padding: 0 5%;
+                }
+                
+                .hero-text {
+                    padding-right: 0;
+                    margin-bottom: 2rem;
+                }
+                
+                .hero-text h1 {
+                    font-size: 2rem;
+                    line-height: 1.3;
+                }
+                
+                .hero-text p {
+                    font-size: 1rem;
+                }
+                
+                .redirect {
+                    width: 100%;
+                    margin-top: 1rem;
+                }
+                
+
+                .img-container {
+                    height: 60vh;
+                }
+                
+                .gradient {
+                    height: 60vh;
+                }
+                
+                .button {
+                    padding: 12px 24px;
+                    font-size: 1rem;
+                }
+                
+
+                .form-container {
+                    margin: 3rem auto 0;
+                    width: 90%;
+                    max-width: 380px;
+                }
+            }
+
+
+            @media (max-width: 480px) {
+                .hero-text h1 {
+                    font-size: 1.8rem;
+                }
+                
+                .hero-text p {
+                    font-size: 0.9rem;
+                }
+                
+                .navbar {
+                    height: 60px;
+                }
+                
+                .nav-list {
+                    top: 60px;
+                }
+                
+                .logo {
+                    font-size: 1.1rem;
+                }
+                
+                .img-container,
+                .gradient {
+                    height: 50vh;
+                }
+            }
       </style>
     </head>
 
@@ -116,7 +260,7 @@
         {%block content%}
         {% include 'navbar.html' %}
         {%endblock%}
-
+        <div class="container-fluid">
         <main class="booking-content">
             <section class="profile-section">
               <div class="profile-info">
@@ -170,9 +314,9 @@
             <form id="hidden-booking-form" method="POST" action="{{url_for('st_appointment', st_initials=st.initials)}}" style="display: none;">
                 <input type="hidden" name="date" id="form-date">
                 <input type="hidden" name="slot" id="form-slot">
-                <input type="hidden" id="meeting-topic" name="meeting-topic">
+                <input type="hidden" id="form-meeting-topic" name="meeting_topic">
             </form>
-            
+    </div>
             <script>
 
                 const weeklySlots = [
@@ -181,13 +325,13 @@
                     {% endfor %}
                 ];
                 
-                // Calendar state
+               
                 let currentMonth = new Date().getMonth();
                 let currentYear = new Date().getFullYear();
                 let selectedDate = null;
                 let selectedSlot = null;
                 
-                // DOM elements
+               
                 const monthYearElement = document.getElementById('month-year');
                 const calendarDaysElement = document.getElementById('calendar-days');
                 const prevMonthBtn = document.getElementById('prev-month');
@@ -200,32 +344,32 @@
                 const confirmBookingBtn = document.getElementById('confirm-booking');
                 const cancelBookingBtn = document.getElementById('cancel-booking');
                 
-                // Initialize calendar
+                
                 function initCalendar() {
                     updateCalendar();
                     setupEventListeners();
                 }
                 
-                // Update calendar display
+                
                 function updateCalendar() {
-                    // Update month/year display
+                    
                     monthYearElement.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
                     
-                    // Clear previous days
+                    
                     calendarDaysElement.innerHTML = '';
                     
-                    // Get first day of month and total days in month
+                    
                     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
                     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
                     const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
                     
-                    // Previous month's days
+                    
                     for (let i = firstDay - 1; i >= 0; i--) {
                         const dayElement = createDayElement(daysInPrevMonth - i, true);
                         calendarDaysElement.appendChild(dayElement);
                     }
                     
-                    // Current month's days
+                    
                     const today = new Date();
                     for (let i = 1; i <= daysInMonth; i++) {
                         const date = new Date(currentYear, currentMonth, i);
@@ -234,14 +378,14 @@
                                         currentMonth === today.getMonth() && 
                                         currentYear === today.getFullYear();
                         
-                        // Check if this day has any available slots
+                        
                         const hasSlots = weeklySlots.some(slot => slot.day === dayOfWeek);
                         
                         const dayElement = createDayElement(i, false, isToday, hasSlots);
                         calendarDaysElement.appendChild(dayElement);
                     }
                     
-                    // Next month's days (to fill the grid)
+                    
                     const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
                     const nextMonthDays = totalCells - (firstDay + daysInMonth);
                     
@@ -251,7 +395,7 @@
                     }
                 }
                 
-                // Create a day element
+                
                 function createDayElement(dayNumber, isOtherMonth, isToday = false, hasSlots = false) {
                     const dayElement = document.createElement('div');
                     dayElement.className = 'day';
@@ -273,7 +417,7 @@
                     dayNumberElement.textContent = dayNumber;
                     dayElement.appendChild(dayNumberElement);
                     
-                    // Only make current month days with slots clickable
+                    
                     if (hasSlots && !isOtherMonth) {
                         dayElement.addEventListener('click', () => {
                             const date = new Date(currentYear, currentMonth, dayNumber);
@@ -284,24 +428,24 @@
                     return dayElement;
                 }
                 
-                // Show time slots for selected date
+                
                 function showTimeSlotsForDate(date) {
                     const dayOfWeek = getDayName(date.getDay());
                     const dateString = formatDate(date);
                     
-                    // Filter slots for this day of week
+                    
                     const slotsForDay = weeklySlots.filter(slot => slot.day === dayOfWeek);
                     
-                    // Update the timeslots container header
+                    
                     timeslotDateElement.textContent = `Available Slots for ${dayOfWeek}, ${formatDisplayDate(date)}`;
                     
-                    // Clear previous slots
+                    
                     timeslotGroupElement.innerHTML = '';
                     
                     if (slotsForDay.length === 0) {
                         timeslotGroupElement.innerHTML = '<div class="no-slots">No available slots for this day</div>';
                     } else {
-                        // Create time slot buttons
+                       
                         slotsForDay.forEach(slot => {
                             const slotElement = document.createElement('button');
                             slotElement.className = 'timeslot-btn';
@@ -321,11 +465,11 @@
                         });
                     }
                     
-                    // Show the timeslots container
+                    
                     timeslotsContainer.style.display = 'block';
                 }
                 
-                // Helper functions
+                
                 function getMonthName(monthIndex) {
                     const months = [
                         'January', 'February', 'March', 'April', 'May', 'June',
@@ -356,7 +500,7 @@
                     });
                 }
                 
-                // Event listeners
+                
                 function setupEventListeners() {
                     prevMonthBtn.addEventListener('click', () => {
                         currentMonth--;
@@ -394,7 +538,7 @@
 
 
 
-                // Replace the confirmBookingBtn event listener with this:
+                
                 confirmBookingBtn.addEventListener('click', () => {
                     if (selectedSlot) {
                         const meetingTopic = document.getElementById('meeting-topic').value;
@@ -404,23 +548,23 @@
                             return;
                         }
                         
-                        // Format the slot as expected by your backend
+                        
                         const formattedSlot = `${selectedSlot.start_time}-${selectedSlot.end_time}`;
                         
-                        // Set the form values
+                        
                         document.getElementById('form-date').value = selectedSlot.date;
                         document.getElementById('form-slot').value = formattedSlot;
-                        document.getElementById('meeting-topic').value = meetingTopic;
-                        // Set the form action dynamically based on the tutor's initials
+                        document.getElementById('form-meeting-topic').value = meetingTopic;
+                        
                         const form = document.getElementById('hidden-booking-form');
                         
                         
-                        // Submit the form
+                       
                         form.submit();
                     }
                 });
                 
-                // Initialize the calendar
+                
                 document.addEventListener('DOMContentLoaded', initCalendar);
             </script>
         

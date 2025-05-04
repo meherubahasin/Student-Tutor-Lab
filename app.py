@@ -211,7 +211,7 @@ def login():
 
             return render_template('index.html', user_id = session['gsuite'], user_type = session['user_type'])
 
-        return render_template('messages.html', message = "Invalid credentials. Please check password and gsuite email properly.g")
+        return render_template('messages.html', message = "Invalid credentials. Please check password and gsuite email properly.")
 
     return render_template('register.html')
 
@@ -241,8 +241,7 @@ def dashboard():
     user = user_collections.find_one({"gsuite": session['gsuite']})
     courses = list(courses_collections.find())
     users = list(user_collections.find())
-    appointments = list(appointment_collections.find())
-    
+ 
     
     if 'gsuite' not in session:
         print('Please log in to access the profile.', 'warning')
@@ -449,8 +448,7 @@ def st_appointment(st_initials):
     if request.method == "POST":
         date = request.form.get('date')
         slot = request.form.get('slot')
-        topic = request.form.get('meeting-topic')
-        appointment = {'st': st_initials, 'student': user_id, 'date': date, 'slot': slot, 'topic': topic}
+        appointment = {'st': st['initials'], 'student': user_id, 'date': date, 'slot': slot}
         appointment_collections.insert_one(appointment)
 
     return redirect(url_for('ST_Profile', st_initials = st_initials))
