@@ -264,7 +264,8 @@ def dashboard():
             for rate in rating:
                 sum+=rate
             sum=sum/len(rating)
-        return render_template('st_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'st': st}), selected_slots=user.get('consultation_slots', []), rating=sum)
+            formatted_number = "{:.1f}".format(sum)
+        return render_template('st_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'st': st}), selected_slots=user.get('consultation_slots', []), rating=formatted_number)
     else:
         return render_template('student_profile.html', user=user, courses = courses, appointments = appointment_collections.find({'student': session['gsuite']}), current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S").split(" "))
     

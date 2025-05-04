@@ -296,6 +296,10 @@
                     <div class="stat-number">{{user.major}}</div>
                     <h3>Gsuite</h3>
                     <div class="stat-number">{{user.gsuite}}</div>
+                    {%if rating%}
+                    <h3>Rating</h3>
+                    <div class="stat-number">{{rating}}/5</div>
+                    {%endif%}
                   </div>
                 </div>
               </div>
